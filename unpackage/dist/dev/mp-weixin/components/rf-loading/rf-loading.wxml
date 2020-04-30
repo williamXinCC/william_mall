@@ -1,0 +1,1 @@
+<view class="cu-load load-modal data-v-3078aef4"><image src="{{src}}" mode="aspectFit" class="data-v-3078aef4"></image><view class="gray-text data-v-3078aef4">{{content}}</view></view>

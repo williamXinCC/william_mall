@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "详情展示",
+  "usingComponents": {
+    "uni-tag": "/components/uni-tag/uni-tag",
+    "rf-rate": "/components/rf-rate/rf-rate",
+    "rf-badge": "/components/rf-badge/rf-badge",
+    "rf-loading": "/components/rf-loading/rf-loading",
+    "rf-item-popup": "/components/rf-item-popup/index",
+    "rf-number-box": "/components/rf-number-box/index",
+    "rf-no-data": "/components/rf-no-data/index"
+  }
+}

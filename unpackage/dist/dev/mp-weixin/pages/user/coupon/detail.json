@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "优惠券详情",
+  "usingComponents": {
+    "uni-drawer": "/components/uni-drawer/uni-drawer",
+    "rf-loading": "/components/rf-loading/rf-loading"
+  }
+}

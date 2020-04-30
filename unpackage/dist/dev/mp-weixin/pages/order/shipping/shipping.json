@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "物流详情",
+  "usingComponents": {
+    "rf-picker": "/components/rf-picker/index"
+  }
+}

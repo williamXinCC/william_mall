@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "关于RF商城",
+  "usingComponents": {
+    "rf-image": "/components/rf-image/rf-image"
+  }
+}
