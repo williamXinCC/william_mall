@@ -18,9 +18,9 @@ export default {
 		checkRule: '',
 		errorMsg: '手机号格式不正确'
 	},  {
-		name: 'customerPassword',
+		name: 'condition',
 		checkType: 'string',
-		checkRule: '6,18',
+		checkRule: '1,18',
 		errorMsg: '请输入6-18位密码'
 	}],
 
