@@ -7,7 +7,7 @@
 			<button class="confirm-btn" open-type="getUserInfo" v-if="isAuthLoginShow" formType="submit" @tap="toAuthLogin">
 				授权登录
 			</button>
-			<button class="confirm-btn plain" plain @tap="navTo('/pages/public/login')">已有账号登录</button>
+			<button class="confirm-btn plain" plain @tap="navTo(`/pages/public/login`)">已有账号登录</button>
 			<button class="confirm-btn plain" plain @tap="navTo(`/pages/public/register`)">立即注册</button>
 		</view>
 		<view class="footer">
@@ -92,6 +92,7 @@
         methods: {
 	          // 通用跳转
             navTo(route) {
+				console.log("跳转地址",route)
             	if (this.isLoginDisabled){
             		 this.$mHelper.toast('请阅读并同意协议', 1.5 * 1000);
             		 return;

@@ -19,9 +19,9 @@
 				<image class="card-bg" :src="vipCardBg"></image>
 				<view class="tit">
 					<i class="iconfont iconiLinkapp-"/>
-					欢迎来到RageFrame微商城
+					<text>{{userInfo.customerName}}</text>欢迎来到william商城
 				</view>
-				<text class="e-m">RageFrame 版权所有</text>
+				<text class="e-m">william 版权所有</text>
 			</view>
 		</view>
 		<!-- 个人中心 内容区-->
@@ -76,10 +76,10 @@
 				           title="我的足迹"></list-cell>
 				<view v-if="hasLogin">
 					<scroll-view scroll-x class="h-list" v-if="footPrintList.length > 0">
-						<view class="h-item" v-for="item in footPrintList" :key="item.id">
-							<image class="h-item-img" @tap.stop="navTo(`/pages/product/product?id=${item.product.id}`)"
-							       :src="item.product.picture" mode="aspectFill"></image>
-						<view class="h-item-text in2line">{{ item.product.name }}</view>
+						<view class="h-item" v-for="item in footPrintList" :key="item.hisId">
+							<image class="h-item-img" @tap.stop="navTo(`/pages/product/product?id=${item.goodsId}`)"
+								   :src="item.goodsImg" mode="aspectFill"></image>
+						<view class="h-item-text in2line">{{ item.goodsName }}</view>
 						</view>
 					</scroll-view>
 					<view class="no-foot-print" v-else-if="footPrintList.length === 0" @tap="navTo('/pages/product/list')">
@@ -235,7 +235,7 @@
                     this.userInfo = r.data;
                     // await uni.setStorageSync('cartNum', r.data.cart_num);
                     // 获取足迹列表
-                    // await this.getFootPrintList();
+                    await this.getFootPrintList();
                     // await this.setSectionData(r.data);
                 }).catch(() => {
                 	  this.hasLogin = false;
@@ -279,7 +279,8 @@
             },
             // 获取足迹列表
             async getFootPrintList() {
-                await this.$http.get(`${footPrintList}`).then(r => {
+                await this.$http.post(`${footPrintList}`,{startPage : 1, pageSize : 5,keyName: ""}).then(r => {
+					console.log(r.data)
                     this.footPrintList = r.data
                 });
             },

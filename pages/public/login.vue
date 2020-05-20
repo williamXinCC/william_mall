@@ -147,8 +147,10 @@
 				this.reqBody['customerPhone'] = this.loginParams['mobile'];
 				let cheRes, loginApi;
         if (this.loginByPass) {
-        	loginApi = loginByPass;
-				  this.reqBody['customerPassword'] = this.loginParams['password'];
+			console.log('密码登录')
+				  loginApi = loginByPass;
+				  this.reqBody['condition'] = this.loginParams['password'];
+				  console.log(this.reqBody)
 				  cheRes = this.$mGraceChecker.check(this.reqBody, this.$mFormRule.loginByPassRule);
         } else {
 				  this.reqBody['code'] = this.loginParams['code'];
@@ -171,7 +173,7 @@
 				/*  #ifdef  MP-QQ  */
 				this.reqBody.group = 'tinyShopQqMq'
 				/*  #endif  */
-        this.handleLogin(this.reqBody, loginApi)
+				this.handleLogin(this.reqBody, loginApi)
 			},
 			// 登录
 			async handleLogin(params, loginApi) {

@@ -83,7 +83,7 @@
 		<!--加载动画-->
 		<rf-loading v-if="loading"></rf-loading>
 
-    <!--进度条加载-->
+		<!--进度条加载-->
 		<rf-load-progress :height="CustomBar" :progress="loadProgress"></rf-load-progress>
 	</view>
 </template>
@@ -169,8 +169,7 @@
 			async getMemberInfo () {
 			    this.loading = false;
 				// TODO
-				await this.$http.post(memberInfo,{uid : uni.getStorageSync('userInfo').customerId}).then(r => {
-					console.log(r)
+				await this.$http.post(memberInfo).then(r => {
 					this.profileInfo = r.data
 					this.date = this.profileInfo.customerBirth;
 				})
@@ -185,7 +184,7 @@
 		    const timer = setInterval(() => {
 					this.loadProgress = this.loadProgress + 6;
 		    }, 50);
-				await this.$http.put(`${memberUpdate}?id=${this.profileInfo.id}`, {
+				await this.$http.post(`${memberUpdate}?id=${this.profileInfo.id}`, {
 					...this.profileInfo,
 					birthday: this.date
 				}).then(() =>{

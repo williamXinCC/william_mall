@@ -5,9 +5,9 @@
  *@date 2019/11/16 11:04:16
  */
 // 个人信息
-const memberInfo = '/customer/getCustomerInfo';
+const memberInfo = '/william-customer/getCustomerInfo';
 // 个人信息修改
-const memberUpdate = '/tiny-shop/v1/member/member/update';
+const memberUpdate = '/william-customer/updateCustomerInfo';
 
 // 收货地址列表
 const addressList = '/tiny-shop/v1/member/address/index';
@@ -48,7 +48,7 @@ const orderDetail = '/tiny-shop/v1/member/order/view';
 const orderDelete = '/tiny-shop/v1/member/order/delete';
 
 // 获取我的足迹
-const footPrintList = '/tiny-shop/v1/member/footprint/index';
+const footPrintList = '/william-footmark/getFootmarkByUid';
 // 删除我的足迹
 const footPrintDel = '/tiny-shop/v1/member/footprint/delete';
 

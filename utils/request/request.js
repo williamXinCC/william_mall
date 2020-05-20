@@ -198,6 +198,9 @@ export default class Request {
       url,
       data,
       method: 'POST',
+	  header: {
+		'uid' : uni.getStorageSync('userInfo').customerId
+	  },
       ...options
     })
   }

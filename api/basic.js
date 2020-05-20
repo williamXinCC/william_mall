@@ -9,9 +9,9 @@
 // 获取省市区列表
 const provinceList = '/tiny-shop/v1/common/provinces/index';
 // 收藏商品
-const collectCreate = '/tiny-shop/v1/common/collect/create';
+const collectCreate = '/william-collect/saveCollect';
 // 删除收藏商品
-const collectDel = '/tiny-shop/v1/common/collect/delete';
+const collectDel = '/william-collect/deleteCollect';
 
 // 分享/转发
 const transmitCreate = '/tiny-shop/v1/common/transmit/create';

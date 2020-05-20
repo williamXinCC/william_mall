@@ -2,7 +2,7 @@
 	<view class="content">
 		<!--评价分类选项-->
 		<view class="label">
-			<view v-for="(label,index) in labelList" :class="{'on':index==labelIndex}" @tap="getEvaluationList('', index, label.type)" :key="index">
+			<view v-for="(label,index) in labelList" :class="{'on':index==labelIndex}" @tap="getEvaluationList(index)" :key="index">
 				{{label.name}}
 				({{label.number}})
 			</view>
@@ -12,16 +12,16 @@
 			<view class="row" v-for="(row, index) in evaluationList" :key="index">
 				<view class="left">
 					<view class="face">
-						<image class="avatar" :src="row.member_head_portrait || headImg" mode="aspectFill"></image>
+						<image class="avatar" :src="row.commentCustIcon || headImg" mode="aspectFill"></image>
 					</view>
 				</view>
 				<view class="right">
 					<view class="name-date">
 						<view class="username">
-							{{row.member_nickname || '匿名用户'}}
+							{{row.createName || '匿名用户'}}
 						</view>
 						<view class="date">
-							{{ row.created_at | time }}
+							{{ row.createTime | time }}
 						</view>
 					</view>
 					<view class="spec">
@@ -39,7 +39,7 @@
 							{{row.content}}
 						</view>
 						<view class="img-video">
-							<view class="box" v-for="item in row.covers" :key="item">
+							<view class="box" v-for="item in row.attachments" :key="item">
 								<rf-image class="image" :src="item"></rf-image>
 							</view>
 						</view>
@@ -77,12 +77,14 @@
 		},
 		data() {
 			return {
-				evaluateStat: {},
+				productCommentCounts: {},
 				labelList:[],
 				labelIndex: 0,
 				evaluationList: [],
 				page: 1,
-				headImg: this.$mAssetsPath.headImg
+				id : '',
+				type : 0,
+				headImg: this.$mAssetsPath.headImg,
 			};
 		},
 		filters: {
@@ -108,39 +110,40 @@
 		//加载更多
 		onReachBottom(){
 			this.page ++;
-			this.getEvaluationList();
+			this.getEvaluationList(this.type,this.page);
 		},
 		methods: {
 			// 初始化数据
 			initData (options) {
-				this.evaluateStat = JSON.parse(options.evaluateStat);
-				if (!this.evaluateStat) return;
-				this.id =  this.evaluateStat.product_id;
+				this.productCommentCounts = JSON.parse(options.productCommentCounts)
+				this.id =  options.goodsId;
 				this.labelList = [
-					{name:'全部',number: options.comment_num,type: {}},
-					{name:'好评',number: this.evaluateStat.good_num || 0, type: { explain_type: 3 }},
-					{name:'中评',number: this.evaluateStat.ordinary_num || 0, type: { explain_type: 2 }},
-					{name:'差评',number: this.evaluateStat.negative_num || 0, type: { explain_type: 1 }},
+					{name:'全部',number: this.productCommentCounts[0].counts,type: this.productCommentCounts[0].type},
+					{name:'好评',number: this.productCommentCounts[1].counts, type: this.productCommentCounts[1].type},
+					{name:'中评',number: this.productCommentCounts[2].counts, type: this.productCommentCounts[2].type},
+					{name:'差评',number: this.productCommentCounts[3].counts, type: this.productCommentCounts[3].type},
 					// {name:'文字',number: this.evaluateStat.good_num || 0, type: { has_content: 1 }},
-					{name:'有图',number: this.evaluateStat.cover_num || 0, type: { has_cover: 1 }},
+					{name:'有图',number: this.productCommentCounts[4].counts, type: this.productCommentCounts[4].type},
 					// {name:'视频',number: this.evaluateStat.good_num || 0, type: { has_video: 1 }},
-					{name:'追加',number: this.evaluateStat.again_num || 0, type: { has_again: 1 }}
+					{name:'追加',number: this.productCommentCounts[5].counts, type: this.productCommentCounts[5].type}
 				]
-				this.getEvaluationList();
+				this.getEvaluationList(0,1);
 			},
 			// 获取评论列表
-			async getEvaluationList(type, index = 0, params) {
-				if (params) {
-					this.page = 1;
-					this.evaluationList = [];
+			async getEvaluationList(type,page) {
+				this.type = type;
+				this.page = page;
+				this.evaluationList = [];
+				const data = {
+					type: type > 3 ? 0 : type,
+					commentType : type <= 3 ? 0 : type,
+					goodsId : this.id,
+					page : this.page
 				}
-				await this.$http.get(`${evaluateList}`, {
-					product_id: this.id,
-					page: this.page,
-					...params
-				}).then(r => {
-					this.labelIndex = index;
-					this.evaluationList = [...this.evaluationList, ...r.data];
+				await this.$http.post(`${evaluateList}`, data).then(async r => {
+					this.labelIndex = type;
+					this.evaluationList.push(...r.data)
+					// this.evaluationList = [...this.evaluationList, ...r.data];
 				}).catch(() => {
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();

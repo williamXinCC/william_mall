@@ -10,7 +10,7 @@
 const registerByPass = '/tiny-shop/v1/site/register';
 
 // 密码登录
-const loginByPass = '/william-login/loginByPass';
+const loginByPass = '/william-login/getLoginByPhoneAndPassword';
 
 // 微信授权登录
 const wechatH5Login = '/tiny-shop/v1/third-party/wechat';

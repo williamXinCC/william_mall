@@ -3,8 +3,8 @@
 		<view class="detail" v-if="productDetail.name">
 			<!--顶部商品轮播图-->
 			<view class="carousel">
-				<swiper indicator-dots circular=true duration="400">
-				<swiper-item class="swiper-item" v-for="(item,index) in productDetail.covers" :key="index">
+				<swiper indicator-dots circular=true duration="400" autoplay="true">
+				<swiper-item class="swiper-item" v-for="(item,index) in detailBannerImgs" :key="index">
 					<view class="image-wrapper">
 						<image
 							:src="item"
@@ -20,14 +20,14 @@
 				<view class="title">
 					{{ productDetail.name || (' 暂无商品详情' + (!!errorInfo ? '[' + errorInfo + ']' : '')) }}
 					<uni-tag
-							v-if="productDetail.sales"
+							v-if="productDetail.sellTotal"
 							class="tag"
 							:inverted="true"
 							type="base"
-							:text="`${productDetail.sales}件已售`"
+							:text="`${productDetail.sellTotal}件已售`"
 							size="small" />
 					<uni-tag
-							v-if="productDetail.is_virtual == 1"
+							v-if="productDetail.goodsType == 1"
 							class="tag"
 							:inverted="true"
 							type="base"
@@ -35,13 +35,13 @@
 							size="small" />
 				</view>
 				<text class="sketch">{{ productDetail.sketch }}</text>
-				<view class="price-box point-box" v-if="productDetail.point_exchange_type == 4">
-					该商品仅需 <text class="price">{{ productDetail.point_exchange }} 积分</text>
+				<view class="price-box point-box" v-if="productDetail.exchangeType == 1">
+					该商品仅需 <text class="price">{{ productDetail.exchangePoint }} 积分</text>
 				</view>
 				<view class="price-box" v-else>
-					<text class="price" v-if="productDetail.price">¥ {{ currentSkuPrice || productDetail.price }}</text>
-					<text class="m-price" v-if="parseFloat(productDetail.market_price) > parseFloat(productDetail.price)">{{ productDetail.market_price }}</text>
-					<text class="coupon-tip" v-if="parseFloat(productDetail.market_price) > parseFloat(productDetail.price)">{{ (currentSkuPrice || productDetail.price) / productDetail.market_price | discountFilter }}折</text>
+					<text class="price" v-if="productDetail.sell">¥ {{ currentSkuPrice || productDetail.sell }}</text>
+					<text class="m-price" v-if="parseFloat(productDetail.marketSell) > parseFloat(productDetail.sell)">{{ productDetail.marketSell }}</text>
+					<text class="coupon-tip" v-if="parseFloat(productDetail.marketSell) > parseFloat(productDetail.sell)">{{ (currentSkuPrice || productDetail.sell) / productDetail.marketSell | discountFilter }}折</text>
 				</view>
 				<view class="data" v-if="productDetail">
 					<view class="item"><text class="iconfont icontuandui"></text>推荐 {{ productDetail.collect_num || 0 }}</view>
@@ -65,12 +65,12 @@
 			<!--商品参数-->
 			<view class="c-list">
 				<!--商品库存-->
-				<rf-item-popup title="商品库存" v-if="parseInt(productDetail.is_stock_visible, 10) == 1" :isEmpty="parseInt(currentStock || productDetail.stock, 10) === 0" empty="库存不足">
-					<view slot="content">{{ currentStock || productDetail.stock || 0 }} 个</view>
+				<rf-item-popup title="商品库存" v-if="parseInt(productDetail.residue, 10) == 1" :isEmpty="parseInt(currentStock || productDetail.residue, 10) === 0" empty="库存不足">
+					<view slot="content">{{ currentStock || productDetail.residue || 0 }} 个</view>
 				</rf-item-popup>
 				<!--发货地址-->
-				<rf-item-popup title="发货地址" :isEmpty="!productDetail.address_name" empty="发货地址未填写">
-					<view slot="content">{{ productDetail.address_name }}</view>
+				<rf-item-popup title="发货地址" :isEmpty="!productDetail.shipAddress" empty="发货地址未填写">
+					<view slot="content">{{ productDetail.shipAddress }}</view>
 				</rf-item-popup>
 				<!--购买类型-->
 				<rf-item-popup title="购买类型" @hide="hideService" :specClass="specClass" @show="toggleSpec" :isEmpty="specSelected.length === 0" :empty="`基础款 * ${cartCount}`">
@@ -83,11 +83,11 @@
 					<view slot="right"><text class="iconfont iconyou"></text></view>
 					<view slot="popup" class="attr-content">
 						<view class="a-t">
-							<image :src="showTypeImage || productDetail.picture"></image>
+							<image :src="showTypeImage || productDetail.sell"></image>
 							<view class="right">
 								<text class="title">{{ productDetail.name }}</text>
-								<text class="price">¥{{ currentSkuPrice || productDetail.minSkuPrice }}</text>
-								<text class="stock">库存：{{ currentStock || productDetail.stock }}件</text>
+								<text class="price">¥{{ currentSkuPrice || productDetail.sell }}</text>
+								<text class="stock">库存：{{ currentStock || productDetail.residue }}件</text>
 								<view class="selected" v-if="specSelected.length > 0">
 									已选：
 									<text class="selected-text" v-for="(sItem, sIndex) in specSelected" :key="sIndex">
@@ -119,7 +119,7 @@
 									<view v-if="parseInt(item.show_type) === 3">
 										<image
 											class="img"
-											:src="childItem.data || productDetail.picture"
+											:src="childItem.data || productDetail.imgs"
 											mode="aspectFill"
 										></image>
 										{{childItem.title }}
@@ -132,7 +132,7 @@
 							<rf-number-box
 								class="step"
 								:min="1"
-								:max="parseInt(currentStock || productDetail.stock, 10)"
+								:max="parseInt(currentStock || productDetail.residue, 10)"
 								:value="cartCount"
 								@eventChange="numberChange"
 							></rf-number-box>
@@ -183,29 +183,29 @@
 				<!--限购说明-->
 				<rf-item-popup title="限购说明">
 					<view slot="content">
-						<text>{{ parseInt(productDetail.max_buy, 10) === 0 ? '不限购' : `${productDetail.max_buy} 件` }}</text>
+						<text>{{ parseInt(productDetail.maxBuy, 10) === 0 ? '不限购' : `${productDetail.maxBuy} 件` }}</text>
 					</view>
 				</rf-item-popup>
 				<!--积分活动-->
 				<rf-item-popup title="积分活动">
 					<view slot="content" class="con-list">
-						<text v-if="productDetail.point_exchange_type">兑换类型: {{ productDetail.point_exchange_type | pointExchangeTypeFilter }} </text>
-						<text v-if="parseInt(productDetail.give_point, 10) > 0">赠送类型: {{ productDetail.integral_give_type | integralGiveTypeFilter }} </text>
-						<text v-if="parseInt(productDetail.give_point, 10) > 0">下单可获得: {{ productDetail | givePointFilter }}</text>
-						<text v-if="productDetail.point_exchange != 0">兑换所需积分: {{ productDetail.point_exchange }} </text>
-						<text v-if="productDetail.max_use_point != 0">可使用抵扣积分: {{ productDetail.max_use_point }}</text>
-						<text class="buy-now" @tap="addCart('buy', true)" v-if="productDetail.point_exchange_type == 3">积分兑换 >>  </text>
+						<text v-if="productDetail.exchangeType">兑换类型: {{ productDetail.exchangeType | pointExchangeTypeFilter }} </text>
+						<text v-if="parseInt(productDetail.givePoint, 10) > 0">赠送类型: {{ productDetail.integral_give_type | integralGiveTypeFilter }} </text>
+						<text v-if="parseInt(productDetail.givePoint, 10) > 0">下单可获得: {{ productDetail | givePointFilter }}</text>
+						<text v-if="productDetail.exchangePoint != 0">兑换所需积分: {{ productDetail.exchangePoint }} </text>
+						<text v-if="productDetail.userPoint != 0">可使用抵扣积分: {{ productDetail.userPoint}}</text>
+						<text class="buy-now" @tap="addCart('buy', true)" v-if="productDetail.exchangeType == 1">积分兑换 >>  </text>
 					</view>
 				</rf-item-popup>
 				<!--服务-->
-        <rf-item-popup title="服务" @hide="hideService" @show="showPopupService('serviceClass', productDetail.tags)" :specClass="serviceClass" :isEmpty="productDetail.tags.length === 0" empty="暂无相关服务">
+        <rf-item-popup title="服务" @hide="hideService" @show="showPopupService('serviceClass', serviceTags)" :specClass="serviceClass" :isEmpty="serviceTags.length === 0" empty="暂无相关服务">
 					<view slot="content">
-						<text>{{ productDetail.tags[0] }}</text>
+						<text>{{ serviceTags[0] }}</text>
 					</view>
-					<view slot="right" v-if="productDetail.tags.length > 0"><text class="iconfont iconyou"></text></view>
+					<view slot="right" v-if="serviceTags.length > 0"><text class="iconfont iconyou"></text></view>
 					<view slot="popup" class="service">
 						<view class="content">
-							<view class="row" v-for="(item,index) in productDetail.tags" :key="index">
+							<view class="row" v-for="(item,index) in serviceTags" :key="index">
 								<view class="title">{{item}}</view>
 								<view class="description">此商品承诺{{item}}</view>
 							</view>
@@ -214,7 +214,7 @@
 					</view>
 				</rf-item-popup>
 				<!--阶梯优惠-->
-				<rf-item-popup title="阶梯优惠" @hide="hideService" @show="showPopupService('ladderPreferentialClass', productDetail.ladderPreferential)" :specClass="ladderPreferentialClass" :isEmpty="productDetail.ladderPreferential.length === 0" empty="暂无阶梯优惠">
+			<!-- 	<rf-item-popup title="阶梯优惠" @hide="hideService" @show="showPopupService('ladderPreferentialClass', productDetail.ladderPreferential)" :specClass="ladderPreferentialClass" :isEmpty="productDetail.ladderPreferential.length === 0" empty="暂无阶梯优惠">
 					<view slot="content" class="con-list">
 						<text>
 							满{{ productDetail.ladderPreferential && productDetail.ladderPreferential[0] && productDetail.ladderPreferential[0].quantity }}件
@@ -235,19 +235,19 @@
 						</view>
 						<button class="btn" @tap="hideService">完成</button>
 					</view>
-				</rf-item-popup>
+				</rf-item-popup> -->
 				<!--商品参数-->
-				<rf-item-popup title="商品参数" @hide="hideService" @show="showPopupService('attributeValueClass', productDetail.attributeValue)" :specClass="attributeValueClass" :isEmpty="productDetail.attributeValue.length === 0" empty="暂无商品参数">
+				<rf-item-popup title="商品参数" @hide="hideService" @show="showPopupService('attributeValueClass', attributeList)" :specClass="attributeValueClass" :isEmpty="productDetail.attributeList.length === 0" empty="暂无商品参数">
 					<view slot="content">
 						<text>
-							{{ `${productDetail.attributeValue && productDetail.attributeValue[0] && productDetail.attributeValue[0].title}: ${productDetail.attributeValue && productDetail.attributeValue[0] && productDetail.attributeValue[0].value}` }}</text>
+							{{ `${attributeList && attributeList[0] && attributeList[0].attributeName}: ${attributeList && attributeList[0] && attributeList[0].attributeValue}` }}</text>
 					</view>
-					<view slot="right" v-if="productDetail.attributeValue.length > 0"><text class="iconfont iconyou"></text></view>
+					<view slot="right" v-if="attributeList.length > 0"><text class="iconfont iconyou"></text></view>
 					<view slot="popup" class="service">
 						<view class="content">
-							<view class="row" v-for="(item,index) in productDetail.attributeValue" :key="index">
+							<view class="row" v-for="(item,index) in attributeList" :key="index">
 								<view class="title">
-									{{ `${item.title}: ${item.value}` }}
+									{{ `${item.attributeName}: ${item.attributeValue}` }}
 								</view>
 							</view>
 						</view>
@@ -259,18 +259,19 @@
 			<view class="eva-section" @tap="toEvaluateList">
 				<view class="e-header">
 					<text class="tit">评价</text>
-					<text>({{ productDetail.comment_num || 0 }})</text>
-					<text class="tip" v-if="productDetail.match_ratio">好评率 {{ productDetail.match_ratio }}%</text>
+					<text>({{ commentCount || 0 }})</text>
+					<!-- <text class="tip" v-if="productDetail.match_ratio">好评率 {{ productDetail.match_ratio }}%</text> -->
+					<text class="tip" v-if="commentCount > 0">评价信息</text>
 					<text class="tip" v-else>暂无评价信息</text>
 					<i class="iconfont iconyou"></i>
 				</view>
-				<view class="eva-box" v-if="productDetail.evaluate && productDetail.evaluate.length > 0">
+				<view class="eva-box" v-if="commentInfo">
 					<image class="portrait"
-								 :src="productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].member_head_portrait || headImg" mode="aspectFill"></image>
+								 :src="commentInfo[0].commentCustIcon" mode="aspectFill"></image>
 					<view class="right">
 						<view class="name">
 							<text>
-								{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].member_nickname || '匿名用户' }}
+								{{ commentInfo && commentInfo[0].createName || '匿名用户' }}
 							</text>
 							<rf-rate
 								v-if="evaluateList.length > 0"
@@ -279,10 +280,10 @@
 								:value="evaluateList[0].scores"
 								active-color="#fa436a" />
 						</view>
-						<text class="con in2line">{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].content || '这个人很懒，什么都没留下~' }}</text>
+						<text class="con in2line">{{ commentInfo && commentInfo[0].content || '这个人很懒，什么都没留下~' }}</text>
 						<view class="bot">
 							<text class="attr">购买类型：{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].sku_name || '基础版' }}</text>
-							<text class="time">{{ productDetail.evaluate && productDetail.evaluate[0] && productDetail.evaluate[0].created_at | time }}</text>
+							<text class="time">{{ commentInfo && commentInfo[0].createTime || time }}</text>
 						</view>
 					</view>
 				</view>
@@ -292,7 +293,7 @@
 				<view class="d-header">
 					<text>商品详情</text>
 				</view>
-				<rich-text :nodes="productDetail.intro | formatRichText"></rich-text>
+				<rich-text :nodes="productDetail.detail | formatRichText"></rich-text>
 			</view>
 			<!-- 底部操作菜单 -->
 			<view class="page-bottom">
@@ -313,7 +314,7 @@
 					<!--<i class="iconfont icondanseshixintubiao-"></i>-->
 					<!--<text>客服</text>-->
 				<!--</view>-->
-				<view class="action-btn-group" v-if="parseInt((this.currentStock || this.productDetail.stock), 10) > 0">
+				<view class="action-btn-group" v-if="parseInt((this.currentStock || this.productDetail.residue), 10) > 0">
 					<button type="primary"
 					        class="action-btn no-border buy-now-btn"
 					        :disabled="buyBtnDisabled"
@@ -352,10 +353,10 @@
 	 * @date 2020-03-23 15:04
 	 * @copyright 2019
 	 */
-	import {cartItemCount, cartItemCreate, productDetail} from '@/api/product';
+	import {cartItemCount, cartItemCreate, productDetail,productCommentCounts} from '@/api/product';
 	import rfNumberBox from '@/components/rf-number-box';
-  import {collectCreate, collectDel, transmitCreate} from '@/api/basic';
-  import moment from '@/common/moment';
+    import {collectCreate, collectDel, transmitCreate} from '@/api/basic';
+    import moment from '@/common/moment';
 	import {couponReceive} from '@/api/userInfo';
 	import rfRate from '@/components/rf-rate/rf-rate';
 	import rfBadge from '@/components/rf-badge/rf-badge'
@@ -431,6 +432,7 @@
 				maskState: 0, //优惠券面板显示状态
 				couponList: [],
 				productDetail: {},
+				attributeList : [],
 				styleObject: {},
 				showTypeImage: null,
 				specSelected:[],
@@ -446,19 +448,23 @@
 				hasLogin: null,
 				cartNum: null,
 				loading: true,
-        errorInfo: '',
+				detailBannerImgs : [],  // 轮播图
+				commentInfo: [],  // 商品评价
+				productCommentCounts: [],  // 评价总数
+				serviceTags: [],  // 商品承诺级服务
+				errorInfo: '',
 				headImg: this.$mAssetsPath.headImg,
 				isPointExchange: false
 			};
 		},
 		computed: {
 			buyBtnDisabled () {
-			    return parseInt(this.currentStock || this.productDetail.stock, 10) === 0;
+			    return parseInt(this.currentStock || this.productDetail.residue, 10) === 0;
 			},
 			addCartBtnDisabled () {
 		    return this.productDetail.point_exchange_type == 2 ||
 			    this.productDetail.point_exchange_type == 4 ||
-			    (this.currentStock || this.productDetail.stock) == 0 ||
+			    (this.currentStock || this.productDetail.residue) == 0 ||
 			    this.productDetail.is_virtual == 1;
 			}
 		},
@@ -492,7 +498,7 @@
       return {
         title: this.productDetail.name,
         path: '/pages/product/product?id=' + this.product_id
-      }
+		}
 		  // #endif
 		},
 		methods:{
@@ -536,9 +542,15 @@
 				})
 			},
 			// 跳转至评价列表
-			toEvaluateList () {
-				if (!this.productDetail.evaluateStat || parseInt(this.productDetail.comment_num, 10) === 0) return;
-				this.$mRouter.push({route: `/pages/order/evaluation/list?comment_num=${this.productDetail.comment_num}&evaluateStat=${JSON.stringify(this.productDetail.evaluateStat)}`});
+			async toEvaluateList () {
+				console.log('跳去列表 ================')
+				if (!this.commentInfo || this.commentInfo.size == 0) return;
+				await this.$http.post(`${productCommentCounts}`,{keyName : this.productDetail.id}).then(r =>{
+					console.log(r)
+					this.productCommentCounts = r.data
+				})
+				// this.$mRouter.push({route: `/pages/order/evaluation/list?comment_num=${this.commentCount}&evaluateStat=${JSON.stringify(this.productDetail.evaluateStat)}`});
+				this.$mRouter.push({route: `/pages/order/evaluation/list?goodsId=${this.productDetail.id}&productCommentCounts=${JSON.stringify(this.productCommentCounts)}`});
 			},
 			numberChange(data){
 				this.cartCount = data.number;
@@ -552,16 +564,23 @@
 			},
 			// 获取产品详情
 			async getProductDetail (id) {
-				await this.$http.get(`${productDetail}`, {
+				await this.$http.post(`${productDetail}`, { keyName : 
 					id
 				}).then(async r => {
-					this.loading = false;
-          this.productDetail = r.data;
-          this.evaluateList = await r.data.evaluate;
-          this.favorite = this.productDetail.myCollect ? true : false;
-          this.specList = this.productDetail.base_attribute_format
-          this.specList.forEach(item => {
-              this.specChildList = [...this.specChildList, ...item.value]
+				console.log(r.data)
+				console.log('评价', r.data.commentInfo)
+				this.loading = false;
+				this.productDetail = r.data.williamGoods;
+				this.serviceTags = r.data.williamGoods.serviceTags.split("-")
+				this.detailBannerImgs = this.productDetail.detailBannerImgs.split(','); // 详情轮播图
+				this.commentInfo = r.data.evaluateList // 商品评价
+				this.commentCount = r.data.evaluateTotalCount  // 评价总数
+				this.attributeList = r.data.goodsAttributeList   // 商品参数
+				this.evaluateList = await r.data.evaluateList;
+				this.favorite = r.data.alreadyCollect == 1 ? true : false;
+				this.specList = this.productDetail.base_attribute_format
+				this.specList.forEach(item => {
+				this.specChildList = [...this.specChildList, ...item.value]
           });
           /**
            * 修复选择规格存储错误
@@ -591,6 +610,7 @@
 			},
 			//规格弹窗开关
 			toggleSpec() {
+				console.log('===toggleSpec ====')
 				if (!this.productDetail.id) return;
 				if(this.specClass === 'show'){
 					if (!this.hasLogin) {
@@ -598,30 +618,35 @@
 						this.$mHelper.backToLogin();
 						return;
 					}
-          if (this.specSelected.length < this.productDetail.base_attribute_format.length){
-				    this.$mHelper.toast('请先选择规格');
-            return;
-          }
-          const skuStr = [];
-          let sku_id = '';
-          this.specSelected.forEach(item => {
-              skuStr.push(item.base_spec_value_id)
-          })
-          this.productDetail.sku.forEach(item => {
-            if (item.data === skuStr.join('-')) {
-              sku_id = item.id;
-              this.currentStock = item.stock;
-              this.currentSkuPrice = item.price;
-            }
-          });
+					//  SKU 先注释掉,有需求再添加
+        //   if (this.specSelected.length < this.productDetail.base_attribute_format.length){
+				    // this.$mHelper.toast('请先选择规格');
+        //     return;
+        //   }
+          // const skuStr = [];
+          // let sku_id = '';
+          // this.specSelected.forEach(item => {
+          //     skuStr.push(item.base_spec_value_id)
+          // })
+          // this.productDetail.sku.forEach(item => {
+          //   if (item.data === skuStr.join('-')) {
+          //     sku_id = item.id;
+          //     this.currentStock = item.stock;
+          //     this.currentSkuPrice = item.price;
+          //   }
+          // });
 					if (parseInt(this.currentStock, 10) === 0) {
 				    this.$mHelper.toast('库存不足');
 				    return;
 					}
+					console.log('购物类型',this.cartType)
 					if (this.cartType === 'cart') {
+						// 需要调整
 						this.handleCartItemCreate(sku_id);
 					} else if (this.cartType === 'buy') {
-						this.buy(sku_id);
+						// 暂时使用 goodsId
+						// this.buy(sku_id);
+						this.buy(this.productDetail.id);
 					}
 					this.cartType = null;
 					this.specClass = 'hide';
@@ -710,8 +735,8 @@
 			// 收藏商品
 			async handleCollectCreate() {
 				await this.$http.post(`${collectCreate}`, {
-					topic_id: this.product_id,
-					topic_type: 'product'
+					collectId: this.product_id,
+					type: '1'
 				}).then(() => {
 					this.favorite = !this.favorite;
 					this.$mHelper.toast('收藏成功');
@@ -719,25 +744,36 @@
 			},
 			// 取消收藏商品
 			async handleCollectDel() {
-				await this.$http.delete(`${collectDel}?id=${this.productDetail.myCollect.id}`).then(() => {
+				await this.$http.post(`${collectDel}`,{
+					collectId: this.product_id,
+					type: '1'
+				}).then(() => {
 					this.favorite = !this.favorite;
 					this.$mHelper.toast('取消收藏成功');
 				})
 			},
-			async buy(sku_id) {
+			//
+			// async buy(sku_id) {
+			async buy(goodsId) {	
+				console.log('===================  sku_id')
 				const list = {};
 				const data = {};
-				data.sku_id = sku_id;
+				// data.sku_id = sku_id;
 				data.num = this.cartCount;
-				if (this.productDetail.point_exchange_type == 2 || this.productDetail.point_exchange_type == 4 || (this.productDetail.point_exchange_type == 3 && this.isPointExchange)) {
+				if (this.productDetail.exchangeType == 2 || this.productDetail.exchangeType == 4 || (this.productDetail.exchangeType == 3 && this.isPointExchange)) {
+					console.log('积分兑换商品')
 					list.type = 'point_exchange';
 				} else {
+					console.log('立即购买')
 					list.type = 'buy_now';
 				}
 				list.data = JSON.stringify(data);
 				this.$mRouter.push({route: `/pages/order/create/order?data=${JSON.stringify(list)}`});
 			},
 			addCart(type, isPointExchange){
+				console.log('type ',type)
+				console.log('isPointExchange ',isPointExchange)
+				console.log('===================addCart')
 				if (!this.productDetail.id) return;
 				this.specClass = 'show';
 				this.cartType = type;
