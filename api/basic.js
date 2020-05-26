@@ -17,7 +17,7 @@ const collectDel = '/william-collect/deleteCollect';
 const transmitCreate = '/tiny-shop/v1/common/transmit/create';
 
 // 广告
-const advList = '/tiny-shop/v1/common/adv/index';
+const advList = '/william-adv/getAdvListByCategory';
 
 // 配置
 const configList = '/tiny-shop/v1/common/config/index';
@@ -30,9 +30,9 @@ const wechatConfig = '/tiny-shop/v1/third-party/wechat-js-sdk';
 
 // 公告
 // 公告列表
-const notifyAnnounceIndex = '/tiny-shop/v1/common/notify-announce/index';
+const notifyAnnounceIndex = '/william-notice/getNoticeListByType';
 // 公告详情
-const notifyAnnounceView = '/tiny-shop/v1/common/notify-announce/view';
+const notifyAnnounceView = '/william-notice/getNoticeInfo';
 
 export {
     provinceList,

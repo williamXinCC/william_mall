@@ -106,11 +106,11 @@ var render = function() {
   var _c = _vm._self._c || _h
   var l1 = _vm.__map(_vm.navList, function(tabItem, tabIndex) {
     var l0 = _vm.__map(_vm.orderList, function(item, index) {
-      var m0 = parseInt(item.order_status, 10)
+      var m0 = parseInt(item.orderStatus, 10)
 
-      var f0 = _vm._f("orderStatusFilter")(item.order_status)
+      var f0 = _vm._f("orderStatusFilter")(item.orderStatus)
 
-      var m1 = _vm.second(item.created_at)
+      var m1 = _vm.second(item.orderCreateTime)
       return {
         $orig: _vm.__get_orig(item),
         m0: m0,
@@ -285,7 +285,8 @@ var _constData = _interopRequireDefault(__webpack_require__(/*! @/config/constDa
       page: 1,
       loading: true,
       isRefreshing: true,
-      guessYouLikeList: [] };
+      guessYouLikeList: [],
+      orderStatus: 0 };
 
   },
   computed: {
@@ -413,30 +414,38 @@ var _constData = _interopRequireDefault(__webpack_require__(/*! @/config/constDa
       this.getOrderList();
     },
     // 获取订单列表
-    getOrderList: function getOrderList(type) {var _this4 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee5() {var index, navItem, params;return _regenerator.default.wrap(function _callee5$(_context5) {while (1) {switch (_context5.prev = _context5.next) {case 0:
+    getOrderList: function getOrderList(type) {var _this4 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee5() {var index, navItem;return _regenerator.default.wrap(function _callee5$(_context5) {while (1) {switch (_context5.prev = _context5.next) {case 0:
+                console.log("获取订单列表");
                 index = _this4.tabCurrentIndex;
+                console.log('tabCurrentIndex', index);
                 navItem = _this4.navList[index];
-                params = {};
+                console.log('navList', navItem.state);
+                // const params = {};
                 if (navItem.state || navItem.state === 0) {
-                  params.synthesize_status = navItem.state;
+                  _this4.orderStatus = navItem.state;
+                  // params.synthesize_status = navItem.state;
                 }
-                params.page = _this4.page;_context5.next = 7;return (
-                  _this4.$http.get("".concat(_userInfo.orderList), params).then( /*#__PURE__*/function () {var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee4(r) {return _regenerator.default.wrap(function _callee4$(_context4) {while (1) {switch (_context4.prev = _context4.next) {case 0:
-                              if (type === 'refresh') {
-                                uni.stopPullDownRefresh();
-                              }
-                              _this4.loadingType = r.data.length === 10 ? 'more' : 'nomore';
-                              _this4.orderList = [].concat(_toConsumableArray(_this4.orderList), _toConsumableArray(r.data));if (!(
-                              _this4.orderList.length === 0)) {_context4.next = 6;break;}_context4.next = 6;return (
-                                _this4.getGuessYouLikeList());case 6:
+                // params.page = this.page;
+                _context5.next = 8;return _this4.$http.post("".concat(_userInfo.orderList), {
+                  keyName: _this4.orderStatus,
+                  startPage: _this4.page,
+                  pageSize: 10 }).
+                then( /*#__PURE__*/function () {var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee4(r) {return _regenerator.default.wrap(function _callee4$(_context4) {while (1) {switch (_context4.prev = _context4.next) {case 0:
+                            if (type === 'refresh') {
+                              uni.stopPullDownRefresh();
+                            }
+                            _this4.loadingType = r.data.length === 10 ? 'more' : 'nomore';
+                            _this4.orderList = [].concat(_toConsumableArray(_this4.orderList), _toConsumableArray(r.data));if (!(
+                            _this4.orderList.length === 0)) {_context4.next = 6;break;}_context4.next = 6;return (
+                              _this4.getGuessYouLikeList());case 6:
 
-                              _this4.loading = false;case 7:case "end":return _context4.stop();}}}, _callee4);}));return function (_x) {return _ref.apply(this, arguments);};}()).
-                  catch(function () {
-                    _this4.loading = false;
-                    if (type === 'refresh') {
-                      uni.stopPullDownRefresh();
-                    }
-                  }));case 7:case "end":return _context5.stop();}}}, _callee5);}))();
+                            _this4.loading = false;case 7:case "end":return _context4.stop();}}}, _callee4);}));return function (_x) {return _ref.apply(this, arguments);};}()).
+                catch(function () {
+                  _this4.loading = false;
+                  if (type === 'refresh') {
+                    uni.stopPullDownRefresh();
+                  }
+                });case 8:case "end":return _context5.stop();}}}, _callee5);}))();
     },
     getGuessYouLikeList: function getGuessYouLikeList() {var _this5 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee6() {return _regenerator.default.wrap(function _callee6$(_context6) {while (1) {switch (_context6.prev = _context6.next) {case 0:_context6.next = 2;return (
                   _this5.$http.get("".concat(_product.guessYouLikeList)).then(function (r) {

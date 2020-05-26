@@ -33,7 +33,7 @@ const couponReceive = '/tiny-shop/v1/marketing/coupon-type/create';
 const couponClear = '/tiny-shop/v1/member/coupon/clear';
 
 // 获取我的订单
-const orderList = '/tiny-shop/v1/member/order/index';
+const orderList = '/william-order/getOrderListByStatus';
 // 订单确认收货
 const orderTakeDelivery = '/tiny-shop/v1/member/order/take-delivery';
 // 退货/退款申请
@@ -42,8 +42,9 @@ const orderRefundApply = '/tiny-shop/v1/member/order-product/refund-apply';
 const orderProductSalesReturn = '/tiny-shop/v1/member/order-product/refund-sales-return';
 // 关闭退货/退款申请
 const closeOrderRefundApply = '/tiny-shop/v1/member/order-product/refund-close';
+
 // 获取订单详情
-const orderDetail = '/tiny-shop/v1/member/order/view';
+const orderDetail = '/william-order/getOrderDetail';
 // 删除已关闭订单
 const orderDelete = '/tiny-shop/v1/member/order/delete';
 

@@ -310,7 +310,7 @@ var startY = 0,moveY = 0,pageAtTop = true;var _default =
   // 小程序分享
   onShareAppMessage: function onShareAppMessage() {
     return {
-      title: '欢迎来到RageFrame商城',
+      title: '欢迎来到william商城',
       path: '/pages/index/index' };
 
   },

@@ -12,7 +12,7 @@
 			<view class="row" v-for="(row, index) in evaluationList" :key="index">
 				<view class="left">
 					<view class="face">
-						<image class="avatar" :src="row.commentCustIcon || headImg" mode="aspectFill"></image>
+						<image class="avatar" :src="row.custIcon || headImg" mode="aspectFill"></image>
 					</view>
 				</view>
 				<view class="right">
@@ -21,7 +21,7 @@
 							{{row.createName || '匿名用户'}}
 						</view>
 						<view class="date">
-							{{ row.createTime | time }}
+							{{ row.createTime}}
 						</view>
 					</view>
 					<view class="spec">
@@ -31,7 +31,7 @@
 						<rf-rate
 							size="16"
 						  disabled="true"
-							:value="row.scores"
+							:value="row.starts"
 							active-color="#fa436a" />
 					</view>
 					<view class="first">
@@ -77,7 +77,7 @@
 		},
 		data() {
 			return {
-				productCommentCounts: {},
+				productEvaluateCount: {},
 				labelList:[],
 				labelIndex: 0,
 				evaluationList: [],
@@ -115,35 +115,38 @@
 		methods: {
 			// 初始化数据
 			initData (options) {
-				this.productCommentCounts = JSON.parse(options.productCommentCounts)
+				this.productEvaluateCount = JSON.parse(options.productEvaluateCount)
 				this.id =  options.goodsId;
 				this.labelList = [
-					{name:'全部',number: this.productCommentCounts[0].counts,type: this.productCommentCounts[0].type},
-					{name:'好评',number: this.productCommentCounts[1].counts, type: this.productCommentCounts[1].type},
-					{name:'中评',number: this.productCommentCounts[2].counts, type: this.productCommentCounts[2].type},
-					{name:'差评',number: this.productCommentCounts[3].counts, type: this.productCommentCounts[3].type},
+					{name:'全部',number: this.productEvaluateCount.total,type: 0},
+					{name:'好评',number: this.productEvaluateCount.good, type: 1},
+					{name:'中评',number: this.productEvaluateCount.ordinary, type: 2},
+					{name:'差评',number: this.productEvaluateCount.negative, type: 3},
 					// {name:'文字',number: this.evaluateStat.good_num || 0, type: { has_content: 1 }},
-					{name:'有图',number: this.productCommentCounts[4].counts, type: this.productCommentCounts[4].type},
+					{name:'有图',number: this.productEvaluateCount.hasImage, type: 4},
 					// {name:'视频',number: this.evaluateStat.good_num || 0, type: { has_video: 1 }},
-					{name:'追加',number: this.productCommentCounts[5].counts, type: this.productCommentCounts[5].type}
+					{name:'追加',number: this.productEvaluateCount.addTo, type: 5}
 				]
 				this.getEvaluationList(0,1);
 			},
 			// 获取评论列表
 			async getEvaluationList(type,page) {
-				this.type = type;
-				this.page = page;
-				this.evaluationList = [];
+				if(type != this.type){
+					this.evaluationList = []
+					this.page = 1
+				}
 				const data = {
 					type: type > 3 ? 0 : type,
-					commentType : type <= 3 ? 0 : type,
+					contentType : type <= 3 ? 0 : type,
 					goodsId : this.id,
-					page : this.page
+					startPage : this.page,
+					pageSize : 10
 				}
 				await this.$http.post(`${evaluateList}`, data).then(async r => {
 					this.labelIndex = type;
-					this.evaluationList.push(...r.data)
-					// this.evaluationList = [...this.evaluationList, ...r.data];
+					// this.evaluationList.push(...r.data)
+					console.log(r.data)
+					this.evaluationList = [...this.evaluationList, ...r.data];
 				}).catch(() => {
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();

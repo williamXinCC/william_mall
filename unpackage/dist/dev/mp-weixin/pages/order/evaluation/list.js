@@ -105,17 +105,14 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   var l0 = _vm.__map(_vm.evaluationList, function(row, index) {
-    var f0 = _vm._f("time")(row.createTime)
-
     var m0 = parseInt(row.has_again, 10)
 
-    var f1 = _vm._f("againDay")(row)
+    var f0 = _vm._f("againDay")(row)
 
     return {
       $orig: _vm.__get_orig(row),
-      f0: f0,
       m0: m0,
-      f1: f1
+      f0: f0
     }
   })
 
@@ -239,7 +236,7 @@ var _moment = _interopRequireDefault(__webpack_require__(/*! @/common/moment */ 
 
   data: function data() {
     return {
-      productCommentCounts: {},
+      productEvaluateCount: {},
       labelList: [],
       labelIndex: 0,
       evaluationList: [],
@@ -277,40 +274,43 @@ var _moment = _interopRequireDefault(__webpack_require__(/*! @/common/moment */ 
   methods: {
     // 初始化数据
     initData: function initData(options) {
-      this.productCommentCounts = JSON.parse(options.productCommentCounts);
+      this.productEvaluateCount = JSON.parse(options.productEvaluateCount);
       this.id = options.goodsId;
       this.labelList = [
-      { name: '全部', number: this.productCommentCounts[0].counts, type: this.productCommentCounts[0].type },
-      { name: '好评', number: this.productCommentCounts[1].counts, type: this.productCommentCounts[1].type },
-      { name: '中评', number: this.productCommentCounts[2].counts, type: this.productCommentCounts[2].type },
-      { name: '差评', number: this.productCommentCounts[3].counts, type: this.productCommentCounts[3].type },
+      { name: '全部', number: this.productEvaluateCount.total, type: 0 },
+      { name: '好评', number: this.productEvaluateCount.good, type: 1 },
+      { name: '中评', number: this.productEvaluateCount.ordinary, type: 2 },
+      { name: '差评', number: this.productEvaluateCount.negative, type: 3 },
       // {name:'文字',number: this.evaluateStat.good_num || 0, type: { has_content: 1 }},
-      { name: '有图', number: this.productCommentCounts[4].counts, type: this.productCommentCounts[4].type },
+      { name: '有图', number: this.productEvaluateCount.hasImage, type: 4 },
       // {name:'视频',number: this.evaluateStat.good_num || 0, type: { has_video: 1 }},
-      { name: '追加', number: this.productCommentCounts[5].counts, type: this.productCommentCounts[5].type }];
+      { name: '追加', number: this.productEvaluateCount.addTo, type: 5 }];
 
       this.getEvaluationList(0, 1);
     },
     // 获取评论列表
     getEvaluationList: function getEvaluationList(type, page) {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var data;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:
-                _this.type = type;
-                _this.page = page;
-                _this.evaluationList = [];
+                if (type != _this.type) {
+                  _this.evaluationList = [];
+                  _this.page = 1;
+                }
                 data = {
                   type: type > 3 ? 0 : type,
-                  commentType: type <= 3 ? 0 : type,
+                  contentType: type <= 3 ? 0 : type,
                   goodsId: _this.id,
-                  page: _this.page };_context2.next = 6;return (
+                  startPage: _this.page,
+                  pageSize: 10 };_context2.next = 4;return (
 
-                  _this.$http.post("".concat(_product.evaluateList), data).then( /*#__PURE__*/function () {var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee(r) {var _this$evaluationList;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:
+                  _this.$http.post("".concat(_product.evaluateList), data).then( /*#__PURE__*/function () {var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee(r) {return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:
                               _this.labelIndex = type;
-                              (_this$evaluationList = _this.evaluationList).push.apply(_this$evaluationList, _toConsumableArray(r.data));
-                              // this.evaluationList = [...this.evaluationList, ...r.data];
-                            case 2:case "end":return _context.stop();}}}, _callee);}));return function (_x) {return _ref.apply(this, arguments);};}()).catch(function () {
+                              // this.evaluationList.push(...r.data)
+                              console.log(r.data);
+                              _this.evaluationList = [].concat(_toConsumableArray(_this.evaluationList), _toConsumableArray(r.data));case 3:case "end":return _context.stop();}}}, _callee);}));return function (_x) {return _ref.apply(this, arguments);};}()).
+                  catch(function () {
                     if (type === 'refresh') {
                       uni.stopPullDownRefresh();
                     }
-                  }));case 6:case "end":return _context2.stop();}}}, _callee2);}))();
+                  }));case 4:case "end":return _context2.stop();}}}, _callee2);}))();
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 

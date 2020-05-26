@@ -46,15 +46,15 @@
           @tap="navTo(`/pages/product/product?id=${item.id}`)"
       >
         <view class="image-wrapper">
-          <image :src="item.picture" mode="aspectFill"></image>
+          <image :src="item.imgs" mode="aspectFill"></image>
         </view>
         <text class="title clamp in2line" v-if="item.name">{{item.name}}</text>
         <view class="last-line" v-if="item.name">
-          <text class="price in1line">{{item.price}}
-            <text class="m-price" v-if="item.market_price > item.price">¥ {{ item.market_price }}</text>
+          <text class="price in1line">{{item.sell}}
+            <text class="m-price" v-if="item.market_sell > item.sell">¥ {{ item.sell }}</text>
           </text>
           <text class="sales in1line">
-            <text class="red">{{ item.sales }}</text>付款
+            <text class="red">{{ item.sell }}</text>付款
           </text>
         </view>
       </view>
@@ -161,7 +161,7 @@
 				this.navBarTop = '94upx';
 				/*  #endif  */
 				/*  #ifdef MP  */
-        this.contentTop = '98upx';
+				this.contentTop = '98upx';
 				/*  #endif  */
 				this.cateId = options.cate_id;
 				if (options.params) {
@@ -200,11 +200,14 @@
 					params = {...this.cateParams}
 				}
 				params.page = this.page;
-				await this.$http.get(`${productList}`, {
-					...params,
-					...this.filterParams
+				await this.$http.post(`${productList}`, {
+					keyName : this.cateId,
+					startPage : this.page,
+					pageSize : 8
+					// ...params,
+					// ...this.filterParams
 				}).then(async r => {
-          this.loading = false;
+					this.loading = false;
 					if (type === 'refresh'){
             uni.stopPullDownRefresh();
 					}

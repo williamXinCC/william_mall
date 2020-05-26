@@ -1,14 +1,14 @@
 <template>
   <view class="rf-notice-detail">
-    <view class="banner" v-if="announceDetail.cover">
-      <rf-image class="banner-img" :src="announceDetail.cover"></rf-image>
+    <view class="banner" v-if="announceDetail.image">
+      <rf-image class="banner-img" :src="announceDetail.image"></rf-image>
       <view class="banner-title in2line">{{announceDetail.title}}</view>
     </view>
-    <view class="banner-title" v-if="!announceDetail.cover">{{announceDetail.title}}</view>
-    <view class="article-meta" v-if="announceDetail.created_at">
-      <text class="article-author">{{announceDetail.author_name}}</text>
+    <view class="banner-title" v-if="!announceDetail.image">{{announceDetail.title}}</view>
+    <view class="article-meta" v-if="announceDetail.createTime">
+      <text class="article-author">{{announceDetail.author}}</text>
       <text class="article-text">发布于</text>
-      <text class="article-time">{{announceDetail.created_at | time}}</text>
+      <text class="article-time">{{announceDetail.createTime}}</text>
     </view>
     <view class="article-content">
       <rich-text :nodes="announceDetail.content"></rich-text>
@@ -48,9 +48,11 @@
 			}
 		},
 		methods: {
-			// 获取通知列表
+			// 获取通知详情
 			async getNotifyAnnounceView(id) {
-				await this.$http.get(`${notifyAnnounceView}`, {id}).then(r => {
+				await this.$http.post(`${notifyAnnounceView}`, {
+					keyName : id
+					}).then(r => {
 					this.loading = false;
 					this.announceDetail = r.data;
 					uni.setNavigationBarTitle({

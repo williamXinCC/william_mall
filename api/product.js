@@ -5,13 +5,13 @@
  *@date 2019/11/18 13:57:54
  */
 // 首页列表
-const indexList = '/tiny-shop/v1/index/index';
+const homePage = '/william-home/getHomePage';
 // 产品分类列表
-const productCate = '/tiny-shop/v1/product/cate/index';
+const productCategory = '/william-goods-category/getGoodsCategoryTreeList';
 // 首页推荐分类
 const productCateList = '/tiny-shop/v1/product/cate/list';
-// 产品列表
-const productList = '/tiny-shop/v1/product/product/index';
+// 分类商品列表
+const productList = '/william-goods/getGoodsListByCategory';
 // 产品详情页面
 const productDetail = '/william-goods/getGoodsInfoPage';
 // 猜你喜欢
@@ -46,7 +46,7 @@ const orderFreightFee = '/tiny-shop/v1/order/order/freight-fee';
 // 商品评价列表
 const evaluateList = '/william-evaluate/getEvaluateListByGoodsIdAndType';
 
-const productCommentCounts = '/william-comment/getCommentTypeCount';
+const productEvaluateCount = '/william-evaluate/getCountByType';
 
 // 商品评价列表
 const orderProductExpressDetails = '/tiny-shop/v1/member/order-product-express/details';
@@ -68,8 +68,8 @@ const discountProductIndex= '/tiny-shop/v1/marketing/discount-product/index';
 
 
 export {
-    indexList,
-    productCate,
+    homePage,
+    productCategory,
     productCateList,
     productList,
     guessYouLikeList,
@@ -93,5 +93,5 @@ export {
     wholesaleView,
     wholesaleGroupState,
     discountProductIndex,
-	productCommentCounts // 商品评价统计
+	productEvaluateCount // 商品评价统计
 };

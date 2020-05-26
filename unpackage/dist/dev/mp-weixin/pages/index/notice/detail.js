@@ -104,16 +104,6 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  var f0 = _vm._f("time")(_vm.announceDetail.created_at)
-
-  _vm.$mp.data = Object.assign(
-    {},
-    {
-      $root: {
-        f0: f0
-      }
-    }
-  )
 }
 var recyclableRender = false
 var staticRenderFns = []
@@ -197,9 +187,11 @@ var _moment = _interopRequireDefault(__webpack_require__(/*! @/common/moment */ 
 
   },
   methods: {
-    // 获取通知列表
+    // 获取通知详情
     getNotifyAnnounceView: function getNotifyAnnounceView(id) {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:_context.next = 2;return (
-                  _this.$http.get("".concat(_basic.notifyAnnounceView), { id: id }).then(function (r) {
+                  _this.$http.post("".concat(_basic.notifyAnnounceView), {
+                    keyName: id }).
+                  then(function (r) {
                     _this.loading = false;
                     _this.announceDetail = r.data;
                     uni.setNavigationBarTitle({

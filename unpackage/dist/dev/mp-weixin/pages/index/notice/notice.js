@@ -107,23 +107,6 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  var l0 = _vm.__map(_vm.announceList, function(item, __i0__) {
-    var f0 = _vm._f("time")(item.created_at)
-
-    return {
-      $orig: _vm.__get_orig(item),
-      f0: f0
-    }
-  })
-
-  _vm.$mp.data = Object.assign(
-    {},
-    {
-      $root: {
-        l0: l0
-      }
-    }
-  )
 }
 var recyclableRender = false
 var staticRenderFns = []
@@ -224,8 +207,13 @@ var _moment = _interopRequireDefault(__webpack_require__(/*! @/common/moment */ 
       this.getNotifyAnnounceIndex();
     },
     // 获取通知列表
-    getNotifyAnnounceIndex: function getNotifyAnnounceIndex(type) {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:_context.next = 2;return (
-                  _this.$http.get("".concat(_basic.notifyAnnounceIndex), { page: _this.page }).then(function (r) {
+    getNotifyAnnounceIndex: function getNotifyAnnounceIndex(type) {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:
+                console.log('获取通知列表??');_context.next = 3;return (
+                  _this.$http.post("".concat(_basic.notifyAnnounceIndex), {
+                    startPage: _this.page,
+                    pageSize: 10,
+                    keyName: 1 }).
+                  then(function (r) {
                     _this.loading = false;
                     if (type === 'refresh') {
                       uni.stopPullDownRefresh();
@@ -237,7 +225,7 @@ var _moment = _interopRequireDefault(__webpack_require__(/*! @/common/moment */ 
                       uni.stopPullDownRefresh();
                     }
                     _this.loading = false;
-                  }));case 2:case "end":return _context.stop();}}}, _callee);}))();
+                  }));case 3:case "end":return _context.stop();}}}, _callee);}))();
     },
     navTo: function navTo(route) {
       this.$mRouter.push({ route: route });

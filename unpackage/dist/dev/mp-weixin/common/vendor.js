@@ -757,7 +757,7 @@ function initData(vueOptions, context) {
     try {
       data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
-      if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
@@ -7091,7 +7091,7 @@ function type(obj) {
 
 function flushCallbacks$1(vm) {
     if (vm.__next_tick_callbacks && vm.__next_tick_callbacks.length) {
-        if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+        if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:flushCallbacks[' + vm.__next_tick_callbacks.length + ']');
@@ -7112,14 +7112,14 @@ function nextTick$1(vm, cb) {
     //1.nextTick 之前 已 setData 且 setData 还未回调完成
     //2.nextTick 之前存在 render watcher
     if (!vm.__next_tick_pending && !hasRenderWatcher(vm)) {
-        if(Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:nextVueTick');
         }
         return nextTick(cb, vm)
     }else{
-        if(Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance$1 = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance$1.is || mpInstance$1.route) + '][' + vm._uid +
                 ']:nextMPTick');
@@ -7195,7 +7195,7 @@ var patch = function(oldVnode, vnode) {
     });
     var diffData = this.$shouldDiffData === false ? data : diff(data, mpData);
     if (Object.keys(diffData).length) {
-      if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + this._uid +
           ']差量更新',
           JSON.stringify(diffData));
@@ -10898,11 +10898,11 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
   // 订单状态
   orderStatus: [
-  { key: 0, value: '待付款' },
-  { key: 1, value: '待发货' },
-  { key: 2, value: '已发货' },
-  { key: 3, value: '已收货' },
-  { key: 4, value: '已完成' },
+  { key: 1, value: '待付款' },
+  { key: 2, value: '待发货' },
+  { key: 3, value: '已发货' },
+  { key: 4, value: '已收货' },
+  { key: 5, value: '已完成' },
   { key: -1, value: '退货申请' },
   { key: -2, value: '退款中' },
   { key: -3, value: '退款完成' },
@@ -10931,11 +10931,11 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
   // 订单状态导航
   orderNavList: [
-  { state: undefined, text: '全部' },
-  { state: 0, text: '待付款' },
-  { state: 1, text: '待发货' },
-  { state: 2, text: '待收货' },
-  { state: 3, text: '评价' }] };exports.default = _default;
+  { state: 0, text: '全部' },
+  { state: 1, text: '待付款' },
+  { state: 2, text: '待发货' },
+  { state: 3, text: '待收货' },
+  { state: 4, text: '评价' }] };exports.default = _default;
 
 /***/ }),
 /* 26 */
@@ -11265,6 +11265,7 @@ Request = /*#__PURE__*/function () {function Request() {var _this = this;_classC
        * @returns {Promise<unknown>}
        */ }, { key: "request", value: function () {var _request = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var _this2 = this;var options,_args = arguments;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:
                 options = _args.length > 0 && _args[0] !== undefined ? _args[0] : {};
+                console.log('运行顺序 2');
                 options.baseUrl = this.config.baseUrl;
                 options.dataType = options.dataType || this.config.dataType;
 
@@ -11326,7 +11327,7 @@ Request = /*#__PURE__*/function () {function Request() {var _this = this;_classC
                   if (handleRe.getTask) {
                     handleRe.getTask(requestTask, handleRe);
                   }
-                }));case 12:case "end":return _context.stop();}}}, _callee, this);}));function request() {return _request.apply(this, arguments);}return request;}() }, { key: "get", value: function get(
+                }));case 13:case "end":return _context.stop();}}}, _callee, this);}));function request() {return _request.apply(this, arguments);}return request;}() }, { key: "get", value: function get(
 
 
     url) {var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -11340,6 +11341,16 @@ Request = /*#__PURE__*/function () {function Request() {var _this = this;_classC
     } }, { key: "post", value: function post(
 
     url, data) {var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+      console.log('运行顺序 1');
+      var baseData = {
+        platform: "miniWeChat",
+        timeStamp: Date.parse(new Date()),
+        version: "v1.0",
+        deviceId: "123456",
+        tenantId: "123",
+        client: "123" };
+
+      data = _objectSpread({}, baseData, {}, data);
       return this.request(_objectSpread({
         url: url,
         data: data,
@@ -41597,7 +41608,7 @@ exports.collectCreate = collectCreate;var collectDel = '/william-collect/deleteC
 exports.collectDel = collectDel;var transmitCreate = '/tiny-shop/v1/common/transmit/create';
 
 // 广告
-exports.transmitCreate = transmitCreate;var advList = '/tiny-shop/v1/common/adv/index';
+exports.transmitCreate = transmitCreate;var advList = '/william-adv/getAdvListByCategory';
 
 // 配置
 exports.advList = advList;var configList = '/tiny-shop/v1/common/config/index';
@@ -41610,9 +41621,9 @@ exports.payCreate = payCreate;var wechatConfig = '/tiny-shop/v1/third-party/wech
 
 // 公告
 // 公告列表
-exports.wechatConfig = wechatConfig;var notifyAnnounceIndex = '/tiny-shop/v1/common/notify-announce/index';
+exports.wechatConfig = wechatConfig;var notifyAnnounceIndex = '/william-notice/getNoticeListByType';
 // 公告详情
-exports.notifyAnnounceIndex = notifyAnnounceIndex;var notifyAnnounceView = '/tiny-shop/v1/common/notify-announce/view';exports.notifyAnnounceView = notifyAnnounceView;
+exports.notifyAnnounceIndex = notifyAnnounceIndex;var notifyAnnounceView = '/william-notice/getNoticeInfo';exports.notifyAnnounceView = notifyAnnounceView;
 
 /***/ }),
 /* 192 */
@@ -41623,20 +41634,20 @@ exports.notifyAnnounceIndex = notifyAnnounceIndex;var notifyAnnounceView = '/tin
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.productCommentCounts = exports.discountProductIndex = exports.wholesaleGroupState = exports.wholesaleView = exports.wholesaleIndex = exports.wholesaleProductIndex = exports.cartItemCount = exports.cartItemUpdateSku = exports.orderProductExpressDetails = exports.orderPreview = exports.evaluateList = exports.orderFreightFee = exports.orderPay = exports.orderClose = exports.orderCreate = exports.cartItemUpdateNum = exports.cartItemClear = exports.cartItemDel = exports.cartItemList = exports.cartItemCreate = exports.productDetail = exports.guessYouLikeList = exports.productList = exports.productCateList = exports.productCate = exports.indexList = void 0; /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       *@des 产品营销
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       *@author stav stavyan@qq.com
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       *@blog https://stavtop.club
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       *@date 2019/11/18 13:57:54
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
+Object.defineProperty(exports, "__esModule", { value: true });exports.productEvaluateCount = exports.discountProductIndex = exports.wholesaleGroupState = exports.wholesaleView = exports.wholesaleIndex = exports.wholesaleProductIndex = exports.cartItemCount = exports.cartItemUpdateSku = exports.orderProductExpressDetails = exports.orderPreview = exports.evaluateList = exports.orderFreightFee = exports.orderPay = exports.orderClose = exports.orderCreate = exports.cartItemUpdateNum = exports.cartItemClear = exports.cartItemDel = exports.cartItemList = exports.cartItemCreate = exports.productDetail = exports.guessYouLikeList = exports.productList = exports.productCateList = exports.productCategory = exports.homePage = void 0; /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          *@des 产品营销
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          *@author stav stavyan@qq.com
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          *@blog https://stavtop.club
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          *@date 2019/11/18 13:57:54
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          */
 // 首页列表
-var indexList = '/tiny-shop/v1/index/index';
+var homePage = '/william-home/getHomePage';
 // 产品分类列表
-exports.indexList = indexList;var productCate = '/tiny-shop/v1/product/cate/index';
+exports.homePage = homePage;var productCategory = '/william-goods-category/getGoodsCategoryTreeList';
 // 首页推荐分类
-exports.productCate = productCate;var productCateList = '/tiny-shop/v1/product/cate/list';
-// 产品列表
-exports.productCateList = productCateList;var productList = '/tiny-shop/v1/product/product/index';
+exports.productCategory = productCategory;var productCateList = '/tiny-shop/v1/product/cate/list';
+// 分类商品列表
+exports.productCateList = productCateList;var productList = '/william-goods/getGoodsListByCategory';
 // 产品详情页面
 exports.productList = productList;var productDetail = '/william-goods/getGoodsInfoPage';
 // 猜你喜欢
@@ -41671,10 +41682,10 @@ exports.orderPay = orderPay;var orderFreightFee = '/tiny-shop/v1/order/order/fre
 // 商品评价列表
 exports.orderFreightFee = orderFreightFee;var evaluateList = '/william-evaluate/getEvaluateListByGoodsIdAndType';exports.evaluateList = evaluateList;
 
-var productCommentCounts = '/william-comment/getCommentTypeCount';
+var productEvaluateCount = '/william-evaluate/getCountByType';
 
 // 商品评价列表
-exports.productCommentCounts = productCommentCounts;var orderProductExpressDetails = '/tiny-shop/v1/member/order-product-express/details';
+exports.productEvaluateCount = productEvaluateCount;var orderProductExpressDetails = '/tiny-shop/v1/member/order-product-express/details';
 
 // 拼团
 // 拼团产品
@@ -41800,7 +41811,7 @@ exports.couponDetail = couponDetail;var couponReceive = '/tiny-shop/v1/marketing
 var couponClear = '/tiny-shop/v1/member/coupon/clear';
 
 // 获取我的订单
-exports.couponClear = couponClear;var orderList = '/tiny-shop/v1/member/order/index';
+exports.couponClear = couponClear;var orderList = '/william-order/getOrderListByStatus';
 // 订单确认收货
 exports.orderList = orderList;var orderTakeDelivery = '/tiny-shop/v1/member/order/take-delivery';
 // 退货/退款申请
@@ -41809,8 +41820,9 @@ exports.orderTakeDelivery = orderTakeDelivery;var orderRefundApply = '/tiny-shop
 exports.orderRefundApply = orderRefundApply;var orderProductSalesReturn = '/tiny-shop/v1/member/order-product/refund-sales-return';
 // 关闭退货/退款申请
 exports.orderProductSalesReturn = orderProductSalesReturn;var closeOrderRefundApply = '/tiny-shop/v1/member/order-product/refund-close';
+
 // 获取订单详情
-exports.closeOrderRefundApply = closeOrderRefundApply;var orderDetail = '/tiny-shop/v1/member/order/view';
+exports.closeOrderRefundApply = closeOrderRefundApply;var orderDetail = '/william-order/getOrderDetail';
 // 删除已关闭订单
 exports.orderDetail = orderDetail;var orderDelete = '/tiny-shop/v1/member/order/delete';
 

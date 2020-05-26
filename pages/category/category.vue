@@ -23,14 +23,14 @@
       <scroll-view scroll-y="true" class="right" :class="animation">
         <view class="category" v-for="(fItem, fIndex) in categoryList" :key="fItem.id"
               v-if="fIndex===showCategoryIndex && fItem.child.length > 0">
-          <view class="banner" @tap="indexTopToDetailPage(cateTop.jump_type, cateTop.jump_link)">
-            <image :src="cateTop && cateTop.cover" mode="aspectFill"/>
+          <view class="banner" @tap="indexTopToDetailPage(cateTop.jumpType, cateTop.jumpTarget)">
+            <image :src="cateTop && cateTop.url" mode="aspectFill"/>
           </view>
           <view class="box" v-for="sItem in fItem.child" :key="sItem.id" @tap="navTo(`/pages/product/list?cate_id=${sItem.id}`)">
             <view class="text">{{sItem.title}}</view>
             <view class="list" v-if="sItem.child && sItem.child.length > 0">
               <view class="box" v-for="tItem in sItem.child" :key="tItem.id" @tap.stop="navTo(`/pages/product/list?cate_id=${tItem.id}`)">
-					      <image :src="tItem.cover || errorImage"></image>
+					      <image :src="tItem.icon || errorImage"></image>
                 <view class="text">{{tItem.title}}</view>
               </view>
             </view>
@@ -54,7 +54,7 @@
 	 * @date 2020-03-10 18:19
 	 * @copyright 2019
 	 */
-	import {productCate} from '@/api/product';
+	import {productCategory} from '@/api/product';
 	import rfSearchBar from '@/components/rf-search-bar';
 	import {advList} from '@/api/basic';
 	export default {
@@ -86,7 +86,7 @@
 			async initData() {
 				this.search = uni.getStorageSync('search') || {};
 				this.hotSearchDefault = '请输入关键字 ' + (this.search.hot_search_default ? ('如: ' + this.search.hot_search_default) : '');
-				this.getProductCate();
+				this.getproductCategory();
         this.initCartItemCount();
 			},
       // 设置购物车数量角标
@@ -102,16 +102,20 @@
         }
       },
 			// 获取商品分类列表
-			async getProductCate() {
-				await this.$http.get(`${productCate}`).then(r => {
+			async getproductCategory() {
+				await this.$http.post(`${productCategory}`).then(r => {
 					this.loading = false;
-					// 获取分类广告图 注：广告图不是一级分类图
+					console.log(r.data)
+		  // 获取分类广告图 注：广告图不是一级分类图
           this.getAdvList();
           // 过滤掉没有二级菜单的一级菜单
 					r.data.forEach(item => {
-            if (item.child.length > 0) {
-            	this.categoryList.push(item)
-            }
+						console.log(item)
+				if (item.child != null && item.child.length > 0) {
+					console.log("coming")
+					this.categoryList.push(item)
+				}
+				console.log(this.categoryList)
           });
 				}).catch(() => {
           this.loading = false;
@@ -119,10 +123,12 @@
 			},
 			// 获取广告列表
 			async getAdvList() {
-				await this.$http.get(`${advList}`, {
-					location: 'cate_top'
+				console.log("获取广告图")
+				await this.$http.post(`${advList}`, {
+					keyName: '8'
 				}).then(r => {
-					this.cateTop = r.data.cate_top[0];
+					console.log(r.data)
+					this.cateTop = r.data[0];
 				});
 			},
 			//分类切换显示

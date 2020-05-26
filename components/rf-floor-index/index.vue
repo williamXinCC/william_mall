@@ -1,8 +1,8 @@
 <template>
 	<view class="rf-floor-index">
 		<!--广告图-->
-		<view class="banner" v-if="bannerShow" @tap="toBanner(banner.jump_type, banner.jump_link)">
-			<image :src="banner.cover" mode="aspectFill"/>
+		<view class="banner" v-if="bannerShow" @tap="toBanner(banner.jump_type, banner.jump_target)">
+			<image :src="banner.url" mode="aspectFill"/>
 		</view>
 		<!--列表-->
 		<view class="f-header" @tap="toList">
@@ -21,16 +21,16 @@
 					@tap.stop="detail(item === 0 ? '' : item.id)"
 			>
 				<view class="image-wrapper">
-					<image :src="item.picture" mode="aspectFill"></image>
-					<text class="sketch in1line">{{ item.sketch }}</text>
+					<image :src="item.imgs" mode="aspectFill"></image>
+					<text class="sketch in1line">{{ item.title }}</text>
 				</view>
 				<text class="title clamp in2line" v-if="item.name">{{item.name}}</text>
         <view class="last-line" v-if="item.name">
-          <text class="price in1line">{{item.price}}
-            <text class="m-price" v-if="item.market_price > item.price">¥ {{ item.market_price }}</text>
+          <text class="price in1line">{{item.sell}}
+            <text class="m-price" v-if="item.marketSell > item.sell">¥ {{ item.marketSell }}</text>
           </text>
           <text class="sales in1line">
-            <text class="red">{{ item.sales }}</text>付款
+            <text class="red">{{ item.sellTotal }}</text>付款
           </text>
         </view>
 			</view>

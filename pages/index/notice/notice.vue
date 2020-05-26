@@ -1,14 +1,14 @@
 <template>
   <view clas="notice">
     <view class="notice-item" v-for="item in announceList" :key="item.id">
-      <text class="time">{{ item.created_at | time }}</text>
+      <text class="time">{{ item.createTime}}</text>
       <view class="content" @tap="navTo(`/pages/index/notice/detail?id=${item.id}`)">
         <text class="title">{{ item.title }}</text>
-        <view class="img-wrapper" v-if="item.cover">
-          <rf-image class="pic" :isPreviewImage="false" :mode="'aspectFit'" :src="item.cover"></rf-image>
+        <view class="img-wrapper" v-if="item.image">
+          <rf-image class="pic" :isPreviewImage="false" :mode="'aspectFit'" :src="item.image"></rf-image>
         </view>
-        <text class="introduce" v-if="item.synopsis">
-          {{ item.synopsis }}
+        <text class="introduce" v-if="item.content">
+          {{ item.content }}
         </text>
         <view class="bot b-t">
           <text>查看详情</text>
@@ -66,7 +66,12 @@
 			},
 			// 获取通知列表
 			async getNotifyAnnounceIndex(type) {
-				await this.$http.get(`${notifyAnnounceIndex}`, {page: this.page}).then(r => {
+				console.log('获取通知列表??')
+				await this.$http.post(`${notifyAnnounceIndex}`, {
+					startPage: this.page,
+					pageSize: 10,
+					keyName : 1
+					}).then(r => {
 					this.loading = false;
           if (type === 'refresh') {
               uni.stopPullDownRefresh();

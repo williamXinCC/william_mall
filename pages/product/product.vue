@@ -267,7 +267,7 @@
 				</view>
 				<view class="eva-box" v-if="commentInfo">
 					<image class="portrait"
-								 :src="commentInfo[0].commentCustIcon" mode="aspectFill"></image>
+								 :src="commentInfo[0].custIcon" mode="aspectFill"></image>
 					<view class="right">
 						<view class="name">
 							<text>
@@ -353,7 +353,7 @@
 	 * @date 2020-03-23 15:04
 	 * @copyright 2019
 	 */
-	import {cartItemCount, cartItemCreate, productDetail,productCommentCounts} from '@/api/product';
+	import {cartItemCount, cartItemCreate, productDetail,productEvaluateCount} from '@/api/product';
 	import rfNumberBox from '@/components/rf-number-box';
     import {collectCreate, collectDel, transmitCreate} from '@/api/basic';
     import moment from '@/common/moment';
@@ -450,7 +450,8 @@
 				loading: true,
 				detailBannerImgs : [],  // 轮播图
 				commentInfo: [],  // 商品评价
-				productCommentCounts: [],  // 评价总数
+				commentCount : 0,  // 评价数量
+				productEvaluateCount: {},  // 评价总数
 				serviceTags: [],  // 商品承诺级服务
 				errorInfo: '',
 				headImg: this.$mAssetsPath.headImg,
@@ -545,12 +546,12 @@
 			async toEvaluateList () {
 				console.log('跳去列表 ================')
 				if (!this.commentInfo || this.commentInfo.size == 0) return;
-				await this.$http.post(`${productCommentCounts}`,{keyName : this.productDetail.id}).then(r =>{
+				await this.$http.post(`${productEvaluateCount}`,{keyName : this.productDetail.id}).then(r =>{
 					console.log(r)
-					this.productCommentCounts = r.data
+					this.productEvaluateCount = r.data
 				})
 				// this.$mRouter.push({route: `/pages/order/evaluation/list?comment_num=${this.commentCount}&evaluateStat=${JSON.stringify(this.productDetail.evaluateStat)}`});
-				this.$mRouter.push({route: `/pages/order/evaluation/list?goodsId=${this.productDetail.id}&productCommentCounts=${JSON.stringify(this.productCommentCounts)}`});
+				this.$mRouter.push({route: `/pages/order/evaluation/list?goodsId=${this.productDetail.id}&productEvaluateCount=${JSON.stringify(this.productEvaluateCount)}`});
 			},
 			numberChange(data){
 				this.cartCount = data.number;
@@ -568,13 +569,13 @@
 					id
 				}).then(async r => {
 				console.log(r.data)
-				console.log('评价', r.data.commentInfo)
 				this.loading = false;
 				this.productDetail = r.data.williamGoods;
 				this.serviceTags = r.data.williamGoods.serviceTags.split("-")
 				this.detailBannerImgs = this.productDetail.detailBannerImgs.split(','); // 详情轮播图
 				this.commentInfo = r.data.evaluateList // 商品评价
 				this.commentCount = r.data.evaluateTotalCount  // 评价总数
+				console.log(this.commentCount)
 				this.attributeList = r.data.goodsAttributeList   // 商品参数
 				this.evaluateList = await r.data.evaluateList;
 				this.favorite = r.data.alreadyCollect == 1 ? true : false;

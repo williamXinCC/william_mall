@@ -10,14 +10,14 @@
 		<!-- 轮播图1 -->
 		<view class="swiper">
 			<view class="swiper-box">
-				<rf-swipe-dot :info="carouselList.index_top" mode="nav" :current="current" field="title">
+				<rf-swipe-dot :info="bannerList" mode="nav" :current="current" field="title">
 					<swiper @change="handleDotChange" autoplay="true">
 						<swiper-item
-								v-for="(item, index) in carouselList.index_top"
-								@tap="indexTopToDetailPage(item.jump_type, item.jump_link)"
+								v-for="(item, index) in bannerList"
+								@tap="indexTopToDetailPage(item.jump_type, item.jump_target)"
 								:key="index">
 							<view class="swiper-item">
-								<image :src="item.cover" mode="aspectFill"/>
+								<image :src="item.url" mode="aspectFill"/>
 							</view>
 						</swiper-item>
 					</swiper>
@@ -45,9 +45,9 @@
 			>
 
 				<view class="img">
-					<image :src="item.cover || errorImage" mode="aspectFill"></image>
+					<image :src="item.icon || errorImage" mode="aspectFill"></image>
 				</view>
-				<view class="text">{{ item.title }}</view>
+				<view class="text">{{ item.name }}</view>
 			</view>
 		</view>
 		<!--新闻通知-->
@@ -63,7 +63,7 @@
 				@toList="navTo(`/pages/product/list?param=${JSON.stringify({is_new: 1})}`)"
 				:header="{title: '新品上市', desc: 'New Products Listed'}"
 				@detail="navToDetailPage"
-				:banner="carouselList.index_new && carouselList.index_new[0]"/>
+				:banner="carouselList.homePageNew && carouselList.homePageNew[0]"/>
 		<!--推荐商品-->
 		<rf-floor-index
 				:list="recommendProductList"
@@ -71,7 +71,7 @@
 				@toBanner="indexTopToDetailPage"
 				@toList="navTo(`/pages/product/list?param=${JSON.stringify({is_recommend: 1})}`)"
 				@detail="navToDetailPage"
-				:banner="carouselList.index_recommend && carouselList.index_recommend[0]"/>
+				:banner="carouselList.homePageRecommend && carouselList.homePageRecommend[0]"/>
 		<!--热门商品-->
 		<rf-floor-index
 				:list="hotProductList"
@@ -79,7 +79,7 @@
 				@toBanner="indexTopToDetailPage"
 				@toList="navTo(`/pages/product/list?param=${JSON.stringify({is_hot: 1})}`)"
 				@detail="navToDetailPage"
-				:banner="carouselList.index_hot && carouselList.index_hot[0]"/>
+				:banner="carouselList.homePageHot && carouselList.homePageHot[0]"/>
 		<!--猜你喜欢-->
 		<rf-floor-index
 				:list="guessYouLikeProductList"
@@ -105,7 +105,7 @@
      * @date 2020-01-08 14:14
      * @copyright 2019
      */
-    import {indexList} from '@/api/product';
+    import {homePage} from '@/api/product';
     import rfSwipeDot from '@/components/rf-swipe-dot';
     import rfFloorIndex from '@/components/rf-floor-index';
     import rfSearchBar from '@/components/rf-search-bar';
@@ -118,6 +118,7 @@
         data() {
             return {
                 current: 0, // 轮播图index
+				bannerList: [],
                 carouselList: {}, // 广告图
                 hotProductList: [], // 热门商品列表
                 recommendProductList: [], // 推荐商品列表
@@ -241,13 +242,11 @@
             },
             // 获取主页数据
             async getIndexList(type) {
-                await this.$http.get(`${indexList}`, {}).then(async r => {
+                await this.$http.post(`${homePage}`, {}).then(async r => {
                     this.loading = false;
                     if (type === 'refresh') {
                         uni.stopPullDownRefresh();
                     }
-                    // 获取公告列表
-                    await this.getNotifyAnnounceIndex();
                     // 首页参数赋值
                     this.initIndexData(r.data);
                 }).catch(() => {
@@ -259,26 +258,25 @@
             },
             // 首页参数赋值
             initIndexData(data) {
-                this.productCateList = data.cate;
-                this.carouselList = data.adv;
-                this.search = data.search;
+				console.log(data)
+				// 公告
+				this.announceList = data.homeNoticList;
+				// 轮播图
+				this.bannerList = data.bannerList;
+				this.hotProductList = data.hotGoodsList;
+                this.productCateList = data.recommendGoodsCategory;
+                this.carouselList = data.homePageAdvResp;
+				this.recommendProductList = data.recommendGoodsList;
+				this.guessYouLikeProductList = data.likeGoodsList;
+				this.newProductList = data.newGoodsList;
+                // this.search = data.search;
                 uni.setStorageSync('search', this.search);
                 this.hotSearchDefault = '请输入关键字' + (data.search.hot_search_default ? `如: ${data.search.hot_search_default}` : '');
                 uni.setStorage({
                     key: 'hotSearchDefault',
                     data: data.search.hot_search_default
                 });
-                this.hotProductList = data.product_hot;
-                this.recommendProductList = data.product_recommend;
-                this.guessYouLikeProductList = data.guess_you_like;
-                this.newProductList = data.product_new;
                 this.config = data.config;
-            },
-            // 获取通知列表
-            async getNotifyAnnounceIndex() {
-                await this.$http.get(`${notifyAnnounceIndex}`).then(r => {
-                    this.announceList = r.data
-                })
             },
             // 跳转至商品详情页
             navToDetailPage(data) {

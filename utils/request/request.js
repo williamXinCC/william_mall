@@ -119,6 +119,7 @@ export default class Request {
    * @returns {Promise<unknown>}
    */
   async request (options = {}) {
+	 console.log('运行顺序 2')
     options.baseUrl = this.config.baseUrl
     options.dataType = options.dataType || this.config.dataType
     // #ifndef MP-ALIPAY || APP-PLUS
@@ -194,6 +195,16 @@ export default class Request {
   }
 
   post (url, data, options = {}) {
+	console.log('运行顺序 1')
+	const baseData = {
+		platform : "miniWeChat",
+		timeStamp: Date.parse(new Date()),
+		version: "v1.0",
+		deviceId: "123456",
+		tenantId: "123",
+		client : "123"
+	  }
+	data = { ...baseData,...data};
     return this.request({
       url,
       data,

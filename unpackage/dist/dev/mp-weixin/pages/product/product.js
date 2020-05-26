@@ -685,7 +685,8 @@ var _userInfo = __webpack_require__(/*! @/api/userInfo */ 248);function _interop
       loading: true,
       detailBannerImgs: [], // 轮播图
       commentInfo: [], // 商品评价
-      productCommentCounts: [], // 评价总数
+      commentCount: 0, // 评价数量
+      productEvaluateCount: {}, // 评价总数
       serviceTags: [], // 商品承诺级服务
       errorInfo: '',
       headImg: this.$mAssetsPath.headImg,
@@ -780,12 +781,12 @@ var _userInfo = __webpack_require__(/*! @/api/userInfo */ 248);function _interop
     toEvaluateList: function toEvaluateList() {var _this4 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:
                 console.log('跳去列表 ================');if (!(
                 !_this4.commentInfo || _this4.commentInfo.size == 0)) {_context3.next = 3;break;}return _context3.abrupt("return");case 3:_context3.next = 5;return (
-                  _this4.$http.post("".concat(_product.productCommentCounts), { keyName: _this4.productDetail.id }).then(function (r) {
+                  _this4.$http.post("".concat(_product.productEvaluateCount), { keyName: _this4.productDetail.id }).then(function (r) {
                     console.log(r);
-                    _this4.productCommentCounts = r.data;
+                    _this4.productEvaluateCount = r.data;
                   }));case 5:
                 // this.$mRouter.push({route: `/pages/order/evaluation/list?comment_num=${this.commentCount}&evaluateStat=${JSON.stringify(this.productDetail.evaluateStat)}`});
-                _this4.$mRouter.push({ route: "/pages/order/evaluation/list?goodsId=".concat(_this4.productDetail.id, "&productCommentCounts=").concat(JSON.stringify(_this4.productCommentCounts)) });case 6:case "end":return _context3.stop();}}}, _callee3);}))();
+                _this4.$mRouter.push({ route: "/pages/order/evaluation/list?goodsId=".concat(_this4.productDetail.id, "&productEvaluateCount=").concat(JSON.stringify(_this4.productEvaluateCount)) });case 6:case "end":return _context3.stop();}}}, _callee3);}))();
     },
     numberChange: function numberChange(data) {
       this.cartCount = data.number;
@@ -803,13 +804,13 @@ var _userInfo = __webpack_require__(/*! @/api/userInfo */ 248);function _interop
                     id }).
                   then( /*#__PURE__*/function () {var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee5(r) {var skuStr;return _regenerator.default.wrap(function _callee5$(_context5) {while (1) {switch (_context5.prev = _context5.next) {case 0:
                               console.log(r.data);
-                              console.log('评价', r.data.commentInfo);
                               _this6.loading = false;
                               _this6.productDetail = r.data.williamGoods;
                               _this6.serviceTags = r.data.williamGoods.serviceTags.split("-");
                               _this6.detailBannerImgs = _this6.productDetail.detailBannerImgs.split(','); // 详情轮播图
                               _this6.commentInfo = r.data.evaluateList; // 商品评价
                               _this6.commentCount = r.data.evaluateTotalCount; // 评价总数
+                              console.log(_this6.commentCount);
                               _this6.attributeList = r.data.goodsAttributeList; // 商品参数
                               _context5.next = 11;return r.data.evaluateList;case 11:_this6.evaluateList = _context5.sent;
                               _this6.favorite = r.data.alreadyCollect == 1 ? true : false;

@@ -339,10 +339,13 @@ var _product = __webpack_require__(/*! @/api/product */ 192);function _interopRe
                   params = _objectSpread({}, _this.cateParams);
                 }
                 params.page = _this.page;_context2.next = 5;return (
-                  _this.$http.get("".concat(_product.productList), _objectSpread({},
-                  params, {},
-                  _this.filterParams)).
-                  then( /*#__PURE__*/function () {var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee(r) {return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:
+                  _this.$http.post("".concat(_product.productList), {
+                    keyName: _this.cateId,
+                    startPage: _this.page,
+                    pageSize: 8
+                    // ...params,
+                    // ...this.filterParams
+                  }).then( /*#__PURE__*/function () {var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee(r) {return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:
                               _this.loading = false;
                               if (type === 'refresh') {
                                 uni.stopPullDownRefresh();

@@ -44,11 +44,11 @@ export default {
 
     // 订单状态
     orderStatus: [
-        {key: 0, value: '待付款'},
-        {key: 1, value: '待发货'},
-        {key: 2, value: '已发货'},
-        {key: 3, value: '已收货'},
-        {key: 4, value: '已完成'},
+        {key: 1, value: '待付款'},
+        {key: 2, value: '待发货'},
+        {key: 3, value: '已发货'},
+        {key: 4, value: '已收货'},
+        {key: 5, value: '已完成'},
         {key: -1, value: '退货申请'},
         {key: -2, value: '退款中'},
         {key: -3, value: '退款完成'},
@@ -77,10 +77,10 @@ export default {
 
     // 订单状态导航
     orderNavList: [
-        {state: undefined, text: '全部'},
-        {state: 0, text: '待付款'},
-        {state: 1, text: '待发货'},
-        {state: 2, text: '待收货'},
-        {state: 3, text: '评价'}
+        {state: 0, text: '全部'},
+        {state: 1, text: '待付款'},
+        {state: 2, text: '待发货'},
+        {state: 3, text: '待收货'},
+        {state: 4, text: '评价'}
     ]
 }

@@ -222,7 +222,7 @@ var _basic = __webpack_require__(/*! @/api/basic */ 191);function _interopRequir
     initData: function initData() {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:
                 _this.search = uni.getStorageSync('search') || {};
                 _this.hotSearchDefault = '请输入关键字 ' + (_this.search.hot_search_default ? '如: ' + _this.search.hot_search_default : '');
-                _this.getProductCate();
+                _this.getproductCategory();
                 _this.initCartItemCount();case 4:case "end":return _context.stop();}}}, _callee);}))();
     },
     // 设置购物车数量角标
@@ -238,28 +238,34 @@ var _basic = __webpack_require__(/*! @/api/basic */ 191);function _interopRequir
 
     },
     // 获取商品分类列表
-    getProductCate: function getProductCate() {var _this3 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:_context3.next = 2;return (
-                  _this3.$http.get("".concat(_product.productCate)).then(function (r) {
+    getproductCategory: function getproductCategory() {var _this3 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:_context3.next = 2;return (
+                  _this3.$http.post("".concat(_product.productCategory)).then(function (r) {
                     _this3.loading = false;
+                    console.log(r.data);
                     // 获取分类广告图 注：广告图不是一级分类图
                     _this3.getAdvList();
                     // 过滤掉没有二级菜单的一级菜单
                     r.data.forEach(function (item) {
-                      if (item.child.length > 0) {
+                      console.log(item);
+                      if (item.child != null && item.child.length > 0) {
+                        console.log("coming");
                         _this3.categoryList.push(item);
                       }
+                      console.log(_this3.categoryList);
                     });
                   }).catch(function () {
                     _this3.loading = false;
                   }));case 2:case "end":return _context3.stop();}}}, _callee3);}))();
     },
     // 获取广告列表
-    getAdvList: function getAdvList() {var _this4 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee4() {return _regenerator.default.wrap(function _callee4$(_context4) {while (1) {switch (_context4.prev = _context4.next) {case 0:_context4.next = 2;return (
-                  _this4.$http.get("".concat(_basic.advList), {
-                    location: 'cate_top' }).
+    getAdvList: function getAdvList() {var _this4 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee4() {return _regenerator.default.wrap(function _callee4$(_context4) {while (1) {switch (_context4.prev = _context4.next) {case 0:
+                console.log("获取广告图");_context4.next = 3;return (
+                  _this4.$http.post("".concat(_basic.advList), {
+                    keyName: '8' }).
                   then(function (r) {
-                    _this4.cateTop = r.data.cate_top[0];
-                  }));case 2:case "end":return _context4.stop();}}}, _callee4);}))();
+                    console.log(r.data);
+                    _this4.cateTop = r.data[0];
+                  }));case 3:case "end":return _context4.stop();}}}, _callee4);}))();
     },
     //分类切换显示
     showCategory: function showCategory(index) {var _this5 = this;

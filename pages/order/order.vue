@@ -24,11 +24,11 @@
 						class="rf-order-item"
 					>
 						<view class="i-top b-b">
-							<text class="time in1line">订单号：{{item.order_sn}}</text>
+							<text class="time in1line">订单号：{{item.orderId}}</text>
 							<!--<text class="time">{{item.created_at | time}}</text>-->
-							<text class="state" v-if="parseInt(item.order_status, 10) !== 0">{{item.order_status | orderStatusFilter }}</text>
+							<text class="state" v-if="parseInt(item.orderStatus, 10) !== 0">{{item.orderStatus | orderStatusFilter }}</text>
 							<view class="example-body" v-else>
-								<rf-count-down :show-day="false" :second="second(item.created_at)" @timeup="timeUp(item)" color="#FFFFFF" background-color="#fa436a" border-color="#fa436a" />
+								<rf-count-down :show-day="false" :second="second(item.orderCreateTime)" @timeup="timeUp(item)" color="#FFFFFF" background-color="#fa436a" border-color="#fa436a" />
 							</view>
 						</view>
 
@@ -47,37 +47,37 @@
 <!--							v-if="item.product && item.product.length === 1"-->
 						<view
 							class="goods-box-single"
-              @tap.stop="navTo(`/pages/product/product?id=${goodsItem.product_id}`)"
-							v-for="(goodsItem, goodsIndex) in item.product" :key="goodsIndex"
+              @tap.stop="navTo(`/pages/product/product?id=${goodsItem.id}`)"
+							v-for="(goodsItem, goodsIndex) in item.orderGoodsList" :key="goodsIndex"
 						>
-							<image class="goods-img" :src="goodsItem.product_picture" mode="aspectFill"></image>
+							<image class="goods-img" :src="goodsItem.goodsImage" mode="aspectFill"></image>
 							<view class="right">
-								<text class="title in2line">{{goodsItem.product_name}}</text>
-								<text class="attr-box">{{goodsItem.sku_name || '基础版'}} * {{goodsItem.num}}</text>
+								<text class="title in2line">{{goodsItem.goodsName}}</text>
+								<text class="attr-box">{{goodsItem.sku_name || '基础版'}} * {{goodsItem.quantity}}</text>
 								<text v-if="goodsItem.point_exchange_type == 2 ||goodsItem.point_exchange_type == 4">
 									<text class="point">{{item.point}}积分 </text>
 								</text>
 								<text class="price" v-else>
-									<text class="red">{{goodsItem.product_money}} <text v-if="goodsItem.gift_flag === 0"> + {{ (item.point + '积分') || '' }}</text></text>
+									<text class="red">{{goodsItem.totalPrice}} <text v-if="goodsItem.givePoint === 0"> + {{ (item.point + '积分') || '' }}</text></text>
 								</text>
 							</view>
 						</view>
 
 						<view class="price-box">
 							共
-							<text class="num">{{ item.product_count }}</text>
-							件商品 实付款
-							<text class="price">{{ item.pay_money }}</text>
+							<text class="num">{{ item.productCount }}</text>
+							件商品  实付款
+							<text class="price">{{ item.orderAmountTotal }}</text>
 						</view>
 						<view class="action-box b-t">
               <button class="action-btn" @tap="handleOrderOperation(item, 'detail')">订单详情</button>
-							<button class="action-btn" v-if="item.order_status == 0" @tap="handleOrderOperation(item, 'close')">取消订单</button>
-							<button class="action-btn recom" v-if="item.order_status == 0" @tap="navTo(`/pages/user/money/pay?id=${item.id}`)">立即支付</button>
-						  <button class="action-btn" v-if="(item.order_status == 4 || item.order_status == 2) && item.product[0].is_virtual != 1" @tap="handleOrderOperation(item, 'shipping')">查看物流</button>
-              <button class="action-btn recom" v-if="item.order_status == 2" @tap="handleOrderOperation(item, 'delivery')">确认收货</button>
+							<button class="action-btn" v-if="item.orderStatus == 1" @tap="handleOrderOperation(item, 'close')">取消订单</button>
+							<button class="action-btn recom" v-if="item.orderStatus == 1" @tap="navTo(`/pages/user/money/pay?id=${item.orderId}`)">立即支付</button>
+						  <button class="action-btn" v-if="(item.orderStatus == 2 || item.orderStatus == 3) && item.product[0].is_virtual != 1" @tap="handleOrderOperation(item, 'shipping')">查看物流</button>
+              <button class="action-btn recom" v-if="item.orderStatus == 3" @tap="handleOrderOperation(item, 'delivery')">确认收货</button>
 <!--              <button class="action-btn recom" v-if="item.order_status == 2 && item.is_customer == 0" @tap="handleOrderOperation(item, 'delivery')">确认收货</button>-->
-							<button class="action-btn recom" v-if="(item.order_status == 3 || item.order_status == 4) && item.is_evaluate == 0" @tap="handleOrderOperation(item, 'evaluation')">批量评价</button>
-						  <button class="action-btn recom" v-if="item.order_status == -4" @tap="handleOrderOperation(item, 'delete')">删除订单</button>
+							<button class="action-btn recom" v-if="(item.orderStatus == 4 || item.orderStatus == 5) && item.is_evaluate == 0" @tap="handleOrderOperation(item, 'evaluation')">批量评价</button>
+						  <button class="action-btn recom" v-if="item.orderStatus == -4" @tap="handleOrderOperation(item, 'delete')">删除订单</button>
             </view>
 					</view>
 					<rf-load-more :status="loadingType" v-if="orderList.length > 0"></rf-load-more>
@@ -117,7 +117,8 @@
 				page: 1,
 				loading: true,
 				isRefreshing: true,
-				guessYouLikeList: []
+				guessYouLikeList: [],
+				orderStatus : 0
 			};
 		},
 		computed: {
@@ -175,7 +176,7 @@
 		    if (this.isRefreshing) {
 	        this.isRefreshing = false;
 					this.handleOrderClose(item.id);
-		    }
+				}
 			},
 			// 订单操作
       handleOrderOperation (item, type) {
@@ -246,14 +247,22 @@
 			},
 			// 获取订单列表
 			async getOrderList(type) {
+				console.log("获取订单列表")
 				let index = this.tabCurrentIndex;
+				console.log('tabCurrentIndex',index)
 				let navItem = this.navList[index];
-				const params = {};
+				console.log('navList',navItem.state)
+				// const params = {};
 				if (navItem.state || navItem.state === 0) {
-					params.synthesize_status = navItem.state;
+					this.orderStatus = navItem.state
+					// params.synthesize_status = navItem.state;
 				}
-				params.page = this.page;
-				await this.$http.get(`${orderList}`, params).then(async r => {
+				// params.page = this.page;
+				await this.$http.post(`${orderList}`, {
+					keyName : this.orderStatus,
+					startPage : this.page,
+					pageSize : 10
+				}).then(async r => {
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
