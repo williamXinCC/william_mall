@@ -384,8 +384,8 @@
             },
             // 获取订单详情
             async getOrderDetail() {
-                await this.$http.get(`${orderDetail}`, {
-                    id: this.order_id
+                await this.$http.post(`${orderDetail}`, {
+                    keyName: this.order_id
                 }).then(r => {
                     this.loading = false;
                     this.orderDetail = r.data;

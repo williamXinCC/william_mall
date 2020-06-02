@@ -7,26 +7,26 @@
           <view class="carrier">
             <view class="title">
 	            <view>
-	              <text class="cell-icon">{{ parseInt(item.range_type, 10) === 2 ? '限' : '全' }}</text>
-	              <text class="cell-title">{{item.title}}</text>
+	              <text class="cell-icon">{{ parseInt(item.useType, 10) === 2 ? '限' : '全' }}</text>
+	              <text class="cell-title">{{item.name}}</text>
 	            </view>
 	            <view>
-								<text class="price" v-if="item.money">{{item.money }}</text>
-								<text class="price-discount" v-else>{{ `${item.discount}折` }}</text>
+								<text class="price" v-if="item.couponTypeValue != 0">{{item.couponTypeValue }}</text>
+								<text class="price-discount" v-else>{{ `${item.couponTypeDiscount}折` }}</text>
 	            </view>
             </view>
             <view class="term">
-              <text>{{ item.start_time | time }} ~ {{ item.end_time | time }}</text>
-							<text class="at_least">满{{ item.at_least }}可用</text>
+              <text>{{ item.expiryStartTime | time }} ~ {{ item.expiryEndTime | time }}</text>
+							<text class="at_least">满{{ item.useLevel }}可用</text>
             </view>
             <view class="usage">
 								<text>
-									{{ parseInt(item.range_type, 10) === 2 ? '部分产品使用' : '全场产品使用' }}
+									{{ parseInt(item.useType, 10) === 2 ? '部分产品使用' : '全场产品使用' }}
 								</text>
               <view>
-                {{parseInt(item.max_fetch, 10) === 0 ? '不限' : `每人限领${item.max_fetch}` }}
-                已领{{ item.get_count }}
-                <text class="last" v-if="item.percentage">剩余{{ item.percentage }}%</text>
+                {{parseInt(item.perLimit, 10) === 0 ? '不限' : `每人限领${item.perLimit}` }}
+                已领{{ item.count - item.residueCount }}
+                <text class="last" v-if="item.residueCount">剩余{{ item.residueCount }}</text>
               </view>
             </view>
           </view>
@@ -67,7 +67,7 @@
         },
         filters: {
             time(val) {
-              return moment(val * 1000).format('YYYY-MM-DD HH:mm')
+              return moment(new Date(val).getTime()).format('YYYY-MM-DD HH:mm')
             }
         },
         onLoad(options) {
@@ -92,8 +92,10 @@
             },
             //获取收货地址列表
             async getCouponList(type) {
-                await this.$http.get(`${couponList}`, {
-                    page: this.page
+                await this.$http.post(`${couponList}`, {
+					keyName : type,
+                    startPage: this.page,
+					pageSize : 10
                 }).then(r => {
                     this.loading = false;
                     if (type === 'refresh') {
@@ -114,18 +116,25 @@
             async getCoupon(item) {
                 if (this.type) return;
                 // 优惠券是否可领取 is_get 0 不可领取
-                if (parseInt(item.is_get, 10) === 0) {
+                if (parseInt(item.count, 10) === 0) {
                     this.$mHelper.toast('该优惠券不可领取');
                     return;
                 }
                 await this.$http.post(`${couponReceive}`, {
-                    id: item.id
-                }).then(() => {
-                    this.$mHelper.toast('领取成功');
-                    this.loading = true;
-                    this.page = 1;
-                    this.couponList.length = 0;
-                    this.getCouponList();
+                    keyName: item.id
+                }).then(r => {
+					console.log('12312')
+					if(r.data == 1){
+						this.$mHelper.toast('领取成功');
+						this.loading = true;
+						this.page = 1;
+						this.couponList.length = 0;
+						this.getCouponList();
+					}else if(r.data == 2){
+						this.$mHelper.toast('您已领取了当前优惠券');
+					}else if(r.data == 3){
+						this.$mHelper.toast('对不起,优惠券已被他人领取');
+					}
                 })
             }
         }

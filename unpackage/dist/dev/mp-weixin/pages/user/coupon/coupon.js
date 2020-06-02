@@ -108,16 +108,16 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   var l0 = _vm.__map(_vm.couponList, function(row, index) {
-    var m0 = parseInt(row.couponType.range_type, 10)
+    var m0 = parseInt(row.useType, 10)
 
-    var f0 = _vm._f("time")(row.start_time)
+    var f0 = _vm._f("time")(row.expiryStartTime)
 
-    var f1 = _vm._f("time")(row.end_time)
+    var f1 = _vm._f("time")(row.expiryEndTime)
 
-    var f2 = _vm._f("timeFull")(row.use_time)
+    var f2 = _vm._f("time")(row.useTime)
 
-    var m1 = parseInt(row.couponType.max_fetch, 10)
-    var m2 = parseInt(row.couponType.range_type, 10)
+    var m1 = parseInt(row.perLimit, 10)
+    var m2 = parseInt(row.useType, 10)
     return {
       $orig: _vm.__get_orig(row),
       m0: m0,
@@ -320,11 +320,11 @@ var _moment = _interopRequireDefault(__webpack_require__(/*! @/common/moment */ 
   filters: {
     // 格式化时间
     time: function time(val) {
-      return (0, _moment.default)(val * 1000).format('YYYY-MM-DD');
+      return (0, _moment.default)(new Date(val).getTime()).format('YYYY-MM-DD');
     },
     // 格式化时间
     timeFull: function timeFull(val) {
-      return (0, _moment.default)(val * 1000).format('YYYY-MM-DD HH:mm:ss');
+      return (0, _moment.default)(new Date(val).getTime()).format('YYYY-MM-DD HH:mm:ss');
     } },
 
   //下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 "enablePullDownRefresh": true
@@ -356,6 +356,13 @@ var _moment = _interopRequireDefault(__webpack_require__(/*! @/common/moment */ 
   methods: {
     // 显示抽屉(可使用商品)
     show: function show(item) {
+      // await this.$http.post(`${getCouponGoods}`,{
+      // 	keyName : ,
+      // 	startPage : 1,
+      // 	pageSize : 10
+      // }).then(() => {
+      // 	this.getMyCouponList();
+      // })
       if (item.usableProduct.length === 0) return;
       this.currentCoupon = item;
       this.showRight = true;
@@ -410,10 +417,12 @@ var _moment = _interopRequireDefault(__webpack_require__(/*! @/common/moment */ 
     },
     // 获取我的优惠券列表
     getMyCouponList: function getMyCouponList(type) {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:_context2.next = 2;return (
-                  _this2.$http.get("".concat(_userInfo.myCouponList), {
-                    page: _this2.page,
-                    state: _this2.state }).
+                  _this2.$http.post("".concat(_userInfo.myCouponList), {
+                    startPage: _this2.page,
+                    keyName: _this2.state,
+                    pageSize: 10 }).
                   then(function (r) {
+                    console.log('优惠券数据', r.data);
                     _this2.loading = false;
                     if (type === 'refresh') {
                       uni.stopPullDownRefresh();

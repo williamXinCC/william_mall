@@ -237,7 +237,7 @@
 					</view>
 				</rf-item-popup> -->
 				<!--商品参数-->
-				<rf-item-popup title="商品参数" @hide="hideService" @show="showPopupService('attributeValueClass', attributeList)" :specClass="attributeValueClass" :isEmpty="productDetail.attributeList.length === 0" empty="暂无商品参数">
+				<rf-item-popup title="商品参数" @hide="hideService" @show="showPopupService('attributeValueClass', attributeList)" :specClass="attributeValueClass" :isEmpty="attributeList.length === 0" empty="暂无商品参数">
 					<view slot="content">
 						<text>
 							{{ `${attributeList && attributeList[0] && attributeList[0].attributeName}: ${attributeList && attributeList[0] && attributeList[0].attributeValue}` }}</text>
@@ -544,7 +544,6 @@
 			},
 			// 跳转至评价列表
 			async toEvaluateList () {
-				console.log('跳去列表 ================')
 				if (!this.commentInfo || this.commentInfo.size == 0) return;
 				await this.$http.post(`${productEvaluateCount}`,{keyName : this.productDetail.id}).then(r =>{
 					console.log(r)

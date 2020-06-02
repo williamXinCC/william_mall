@@ -153,6 +153,7 @@ var _product = __webpack_require__(/*! @/api/product */ 192);function _interopRe
 {
   name: 'rfRecommend',
   props: {
+    page: 0,
     list: {
       type: Array,
       default: function _default() {
@@ -177,7 +178,10 @@ var _product = __webpack_require__(/*! @/api/product */ 192);function _interopRe
       }
     },
     getGuessYouLikeList: function getGuessYouLikeList() {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:_context.next = 2;return (
-                  _this.$http.get("".concat(_product.guessYouLikeList)).then(function (r) {
+                  _this.$http.post("".concat(_product.guessYouLikeList), {
+                    startPage: _this.page + 1,
+                    pageSize: 10 }).
+                  then(function (r) {
                     _this.guessYouLikeList = r.data;
                   }));case 2:case "end":return _context.stop();}}}, _callee);}))();
     },

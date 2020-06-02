@@ -361,14 +361,19 @@ var _product = __webpack_require__(/*! @/api/product */ 192);function _interopRe
                     }
                   }));case 5:case "end":return _context2.stop();}}}, _callee2);}))();
     },
-    getGuessYouLikeList: function getGuessYouLikeList() {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:_context3.next = 2;return (
-                  _this2.$http.get("".concat(_product.guessYouLikeList), {}).then(function (r) {
+    getGuessYouLikeList: function getGuessYouLikeList() {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:
+                console.log("猜你喜欢");_context3.next = 3;return (
+                  _this2.$http.post("".concat(_product.guessYouLikeList), {
+                    startPage: _this2.page,
+                    pageSize: 10 }).
+                  then(function (r) {
+                    console.log(r.data);
                     _this2.loading = false;
                     _this2.loadingType = r.data.length === 10 ? 'more' : 'nomore';
                     _this2.goodsList = [].concat(_toConsumableArray(_this2.goodsList), _toConsumableArray(r.data));
                   }).catch(function () {
                     _this2.loading = false;
-                  }));case 2:case "end":return _context3.stop();}}}, _callee3);}))();
+                  }));case 3:case "end":return _context3.stop();}}}, _callee3);}))();
     },
     // 获取商品分类
     getProductCate: function getProductCate() {var _this3 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee4() {return _regenerator.default.wrap(function _callee4$(_context4) {while (1) {switch (_context4.prev = _context4.next) {case 0:_context4.next = 2;return (

@@ -225,7 +225,7 @@ var _userInfo = __webpack_require__(/*! @/api/userInfo */ 248);function _interop
     },
     // 获取收货地址
     getAddressDetail: function getAddressDetail(id) {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:_context3.next = 2;return (
-                  _this2.$http.get("".concat(_userInfo.addressDetail), {
+                  _this2.$http.post("".concat(_userInfo.addressDetail), {
                     id: id }).
                   then( /*#__PURE__*/function () {var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2(r) {return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:
                               _this2.addressData = r.data;
@@ -264,14 +264,15 @@ var _userInfo = __webpack_require__(/*! @/api/userInfo */ 248);function _interop
       }
     },
     handleAddressUpdate: function handleAddressUpdate(data) {var _this3 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee4() {return _regenerator.default.wrap(function _callee4$(_context4) {while (1) {switch (_context4.prev = _context4.next) {case 0:_context4.next = 2;return (
-                  _this3.$http.put("".concat(_userInfo.addressUpdate, "?id=").concat(data.id), {
-                    realname: data.realname,
-                    mobile: data.mobile,
-                    address_details: data.address_details,
-                    is_default: data.is_default ? 1 : 0,
-                    province_id: data.province_id,
-                    city_id: data.city_id,
-                    area_id: data.area_id }).
+                  _this3.$http.post("".concat(_userInfo.addressUpdate), {
+                    id: data.id,
+                    receivingName: data.realname,
+                    receivingPhone: data.mobile,
+                    location: data.address_details,
+                    checked: data.is_default ? 1 : 0,
+                    province: data.province_id,
+                    city: data.city_id,
+                    county: data.area_id }).
                   then(function () {
                     _this3.$mHelper.toast('收货地址修改成功！');
                     _this3.$mRouter.back();
@@ -279,13 +280,13 @@ var _userInfo = __webpack_require__(/*! @/api/userInfo */ 248);function _interop
     },
     handleAddressCreate: function handleAddressCreate(data) {var _this4 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee5() {return _regenerator.default.wrap(function _callee5$(_context5) {while (1) {switch (_context5.prev = _context5.next) {case 0:_context5.next = 2;return (
                   _this4.$http.post("".concat(_userInfo.addressCreate), {
-                    realname: data.realname,
-                    mobile: data.mobile,
-                    address_details: data.address_details,
-                    is_default: data.is_default ? 1 : 0,
-                    province_id: data.province_id,
-                    city_id: data.city_id,
-                    area_id: data.area_id }).
+                    receivingName: data.realname,
+                    receivingPhone: data.mobile,
+                    location: data.address_details,
+                    checked: data.is_default ? 1 : 2,
+                    province: data.province_id,
+                    city: data.city_id,
+                    county: data.area_id }).
                   then(function () {
                     _this4.$mHelper.toast('收货地址修改成功！');
                     _this4.$mRouter.back();

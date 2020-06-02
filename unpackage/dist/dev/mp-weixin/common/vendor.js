@@ -757,7 +757,7 @@ function initData(vueOptions, context) {
     try {
       data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
-      if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
@@ -7091,7 +7091,7 @@ function type(obj) {
 
 function flushCallbacks$1(vm) {
     if (vm.__next_tick_callbacks && vm.__next_tick_callbacks.length) {
-        if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+        if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:flushCallbacks[' + vm.__next_tick_callbacks.length + ']');
@@ -7112,14 +7112,14 @@ function nextTick$1(vm, cb) {
     //1.nextTick 之前 已 setData 且 setData 还未回调完成
     //2.nextTick 之前存在 render watcher
     if (!vm.__next_tick_pending && !hasRenderWatcher(vm)) {
-        if(Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:nextVueTick');
         }
         return nextTick(cb, vm)
     }else{
-        if(Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance$1 = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance$1.is || mpInstance$1.route) + '][' + vm._uid +
                 ']:nextMPTick');
@@ -7195,7 +7195,7 @@ var patch = function(oldVnode, vnode) {
     });
     var diffData = this.$shouldDiffData === false ? data : diff(data, mpData);
     if (Object.keys(diffData).length) {
-      if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + this._uid +
           ']差量更新',
           JSON.stringify(diffData));
@@ -41598,7 +41598,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.notifyAnno
                                                                                                                                                                                                                                                                                                                               */
 
 // 获取省市区列表
-var provinceList = '/tiny-shop/v1/common/provinces/index';
+var provinceList = '/william-area/areaList';
 // 收藏商品
 exports.provinceList = provinceList;var collectCreate = '/william-collect/saveCollect';
 // 删除收藏商品
@@ -41645,27 +41645,27 @@ var homePage = '/william-home/getHomePage';
 // 产品分类列表
 exports.homePage = homePage;var productCategory = '/william-goods-category/getGoodsCategoryTreeList';
 // 首页推荐分类
-exports.productCategory = productCategory;var productCateList = '/tiny-shop/v1/product/cate/list';
+exports.productCategory = productCategory;var productCateList = '/william-goods-category/getHomePageRecommendCategory';
 // 分类商品列表
 exports.productCateList = productCateList;var productList = '/william-goods/getGoodsListByCategory';
 // 产品详情页面
 exports.productList = productList;var productDetail = '/william-goods/getGoodsInfoPage';
 // 猜你喜欢
-exports.productDetail = productDetail;var guessYouLikeList = '/tiny-shop/v1/product/product/guess-you-like';
+exports.productDetail = productDetail;var guessYouLikeList = '/william-goods/getGuessYouLike';
 // 添加购物车
 exports.guessYouLikeList = guessYouLikeList;var cartItemCreate = '/tiny-shop/v1/member/cart-item/create';
 // 购物车列表
-exports.cartItemCreate = cartItemCreate;var cartItemList = '/tiny-shop/v1/member/cart-item/index';
+exports.cartItemCreate = cartItemCreate;var cartItemList = '/william-cart/getCartByUid';
 // 购物车列表
 exports.cartItemList = cartItemList;var cartItemCount = '/tiny-shop/v1/member/cart-item/count';
 // 删除购物车商品
-exports.cartItemCount = cartItemCount;var cartItemDel = '/tiny-shop/v1/member/cart-item/delete-ids';
+exports.cartItemCount = cartItemCount;var cartItemDel = '/william-cart/deleteCartItem';
 // 清空购物车
-exports.cartItemDel = cartItemDel;var cartItemClear = '/tiny-shop/v1/member/cart-item/clear';
+exports.cartItemDel = cartItemDel;var cartItemClear = '/william-cart/deleteAllCartItem';
 // 修改购物车商品数量
-exports.cartItemClear = cartItemClear;var cartItemUpdateNum = '/tiny-shop/v1/member/cart-item/update-num';
+exports.cartItemClear = cartItemClear;var cartItemUpdateNum = '/william-cart/updateCartItemNum';
 // 修改购物车商品sku
-exports.cartItemUpdateNum = cartItemUpdateNum;var cartItemUpdateSku = '/tiny-shop/v1/member/cart-item/update-sku';
+exports.cartItemUpdateNum = cartItemUpdateNum;var cartItemUpdateSku = '/william-cart/updateSku';
 
 // 订单创建
 exports.cartItemUpdateSku = cartItemUpdateSku;var orderCreate = '/tiny-shop/v1/order/order/create';
@@ -41788,27 +41788,28 @@ var memberInfo = '/william-customer/getCustomerInfo';
 exports.memberInfo = memberInfo;var memberUpdate = '/william-customer/updateCustomerInfo';
 
 // 收货地址列表
-exports.memberUpdate = memberUpdate;var addressList = '/tiny-shop/v1/member/address/index';
+exports.memberUpdate = memberUpdate;var addressList = '/william-address/getCustomerAddressList';
 // 默认收货地址
-exports.addressList = addressList;var addressDefault = '/tiny-shop/v1/member/address/default';
+exports.addressList = addressList;var addressDefault = '/william-address/updateDefaultAddress';
 // 默认收货地址
-exports.addressDefault = addressDefault;var addressDetail = '/tiny-shop/v1/member/address/view';
+exports.addressDefault = addressDefault;var addressDetail = '/william-address/getDefaultAddress';
 // 创建收货地址
-exports.addressDetail = addressDetail;var addressCreate = '/tiny-shop/v1/member/address/create';
+exports.addressDetail = addressDetail;var addressCreate = '/william-address/saveAddress';
 // 修改收货地址
-exports.addressCreate = addressCreate;var addressUpdate = '/tiny-shop/v1/member/address/update';
-// 修改收货地址
-exports.addressUpdate = addressUpdate;var addressDelete = '/tiny-shop/v1/member/address/delete';
+exports.addressCreate = addressCreate;var addressUpdate = '/william-address/updateAddress';
+// 删除收货地址
+exports.addressUpdate = addressUpdate;var addressDelete = '/william-address/deleteAddress';
 
 // 获取优惠券列表
-exports.addressDelete = addressDelete;var couponList = '/tiny-shop/v1/marketing/coupon-type/index';
+exports.addressDelete = addressDelete;var couponList = '/william-coupon/getCouponCenter';
 // 获取我的优惠券列表
-exports.couponList = couponList;var myCouponList = '/tiny-shop/v1/member/coupon/index';
+exports.couponList = couponList;var myCouponList = '/william-coupon/getCouponByType';
 // 优惠券详情
-exports.myCouponList = myCouponList;var couponDetail = '/tiny-shop/v1/marketing/coupon-type/view';
+exports.myCouponList = myCouponList;var couponDetail = '/william-coupon/getCouponDetail';
 // 领取优惠券
-exports.couponDetail = couponDetail;var couponReceive = '/tiny-shop/v1/marketing/coupon-type/create';exports.couponReceive = couponReceive;
-var couponClear = '/tiny-shop/v1/member/coupon/clear';
+exports.couponDetail = couponDetail;var couponReceive = '/william-coupon/saveCoupon';
+// 清空失效优惠券
+exports.couponReceive = couponReceive;var couponClear = '/william-coupon/deleteExpireCoupon';
 
 // 获取我的订单
 exports.couponClear = couponClear;var orderList = '/william-order/getOrderListByStatus';
@@ -41824,15 +41825,15 @@ exports.orderProductSalesReturn = orderProductSalesReturn;var closeOrderRefundAp
 // 获取订单详情
 exports.closeOrderRefundApply = closeOrderRefundApply;var orderDetail = '/william-order/getOrderDetail';
 // 删除已关闭订单
-exports.orderDetail = orderDetail;var orderDelete = '/tiny-shop/v1/member/order/delete';
+exports.orderDetail = orderDetail;var orderDelete = '/william-order/deleteOrder';
 
 // 获取我的足迹
 exports.orderDelete = orderDelete;var footPrintList = '/william-footmark/getFootmarkByUid';
 // 删除我的足迹
-exports.footPrintList = footPrintList;var footPrintDel = '/tiny-shop/v1/member/footprint/delete';
+exports.footPrintList = footPrintList;var footPrintDel = '/william-footmark/deleteFootmarkById';
 
 // 收藏列表
-exports.footPrintDel = footPrintDel;var collectList = '/tiny-shop/v1/member/collect/index';
+exports.footPrintDel = footPrintDel;var collectList = '/william-collect/getMyCollect';
 
 // 积分余额日志
 exports.collectList = collectList;var creditsLogList = '/tiny-shop/v1/member/credits-log/index';

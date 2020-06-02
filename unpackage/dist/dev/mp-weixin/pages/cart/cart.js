@@ -101,13 +101,13 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  var l0 = _vm.__map(_vm.cartList, function(row, index) {
-    var m0 = parseInt(row.status, 10)
-    var m1 = parseInt(row.status, 10)
-    var m2 = parseInt(row.status, 10)
-    var m3 = parseInt(row.status, 10)
+  var l0 = _vm.__map(_vm.specList, function(item, index) {
+    var m0 = parseInt(item.show_type)
+    var m1 = parseInt(item.show_type)
+    var m2 = parseInt(item.show_type)
+    var m3 = parseInt(item.show_type)
     return {
-      $orig: _vm.__get_orig(row),
+      $orig: _vm.__get_orig(item),
       m0: m0,
       m1: m1,
       m2: m2,
@@ -115,26 +115,11 @@ var render = function() {
     }
   })
 
-  var l1 = _vm.__map(_vm.specList, function(item, index) {
-    var m4 = parseInt(item.show_type)
-    var m5 = parseInt(item.show_type)
-    var m6 = parseInt(item.show_type)
-    var m7 = parseInt(item.show_type)
-    return {
-      $orig: _vm.__get_orig(item),
-      m4: m4,
-      m5: m5,
-      m6: m6,
-      m7: m7
-    }
-  })
-
   _vm.$mp.data = Object.assign(
     {},
     {
       $root: {
-        l0: l0,
-        l1: l1
+        l0: l0
       }
     }
   )
@@ -468,8 +453,8 @@ var _product = __webpack_require__(/*! @/api/product */ 192);function _interopRe
     getProductDetail: function getProductDetail(row) {var _this3 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:
                 _this3.currentSkuId = row.sku_id;
                 _this3.currentNewSkuId = row.sku_id;_context2.next = 4;return (
-                  _this3.$http.get("".concat(_product.productDetail), {
-                    id: row.product_id }).
+                  _this3.$http.post("".concat(_product.productDetail), {
+                    keyName: row.id }).
                   then( /*#__PURE__*/function () {var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee(r) {var skuStr;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:
                               _this3.productDetail = r.data;
                               _this3.specList = _this3.productDetail.base_attribute_format;
@@ -517,13 +502,14 @@ var _product = __webpack_require__(/*! @/api/product */ 192);function _interopRe
                   sku_ids.push(parseInt(id, 10));
                 } else {
                   for (i = 0; i < _this5.cartList.length; i++) {
-                    if (_this5.cartList[i].selected) {
-                      sku_ids.push(parseInt(_this5.cartList[i].sku_id, 10));
+                    if (_this5.cartList[i].williamCartItem.checked) {
+                      sku_ids.push(_this5.cartList[i].williamCartItem.itemId);
                     }
                   }
-                }_context3.next = 4;return (
+                }
+                console.log(sku_ids.join(","));_context3.next = 5;return (
                   _this5.$http.post("".concat(_product.cartItemDel), {
-                    sku_ids: JSON.stringify(sku_ids) }).
+                    keyName: sku_ids.join(",") }).
                   then(function () {
                     _this5.selectedList.length = 0;
                     _this5.isAllselected = false;
@@ -531,7 +517,7 @@ var _product = __webpack_require__(/*! @/api/product */ 192);function _interopRe
                     _this5.getCartItemList();
                     _this5.oldIndex = null;
                     _this5.theIndex = null;
-                  }));case 4:case "end":return _context3.stop();}}}, _callee3);}))();
+                  }));case 5:case "end":return _context3.stop();}}}, _callee3);}))();
     },
     // 修改购物车商品sku
     handleCartItemUpdateSku: function handleCartItemUpdateSku(sku_id, new_sku_id) {var _this6 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee4() {return _regenerator.default.wrap(function _callee4$(_context4) {while (1) {switch (_context4.prev = _context4.next) {case 0:_context4.next = 2;return (
@@ -567,14 +553,22 @@ var _product = __webpack_require__(/*! @/api/product */ 192);function _interopRe
         url: url });
 
     },
-    // 获取购物车列表
+    // 获取购物车列表  TODO
     getCartItemList: function getCartItemList(type) {var _this7 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee5() {return _regenerator.default.wrap(function _callee5$(_context5) {while (1) {switch (_context5.prev = _context5.next) {case 0:_context5.next = 2;return (
-                  _this7.$http.get("".concat(_product.cartItemList), {}, {}, _this7).then(function (r) {
+                  _this7.$http.post("".concat(_product.cartItemList)).then(function (r) {
                     _this7.loading = false;
                     if (type === 'refresh') {
                       uni.stopPullDownRefresh();
                     }
                     _this7.cartList = r.data;
+                    var tempArr = [];
+                    // 获取选中列表
+                    r.data.forEach(function (item, index) {
+                      if (item.williamCartItem.checked == 1) {
+                        tempArr.push(item);
+                      }
+                    });
+                    _this7.selectedList = [].concat(tempArr);
                     uni.setStorageSync('cartNum', r.data.length);
                     if (r.data.length === 0) {
                       uni.removeTabBarBadge({ index: 2 });
@@ -595,6 +589,7 @@ var _product = __webpack_require__(/*! @/api/product */ 192);function _interopRe
     },
     // 清空购物车
     clearCart: function clearCart(params) {var _this8 = this;
+      console.log(params);
       var content = params ? '清空失效商品？' : '清空购物车？';
       uni.showModal({
         content: content,
@@ -662,8 +657,8 @@ var _product = __webpack_require__(/*! @/api/product */ 192);function _interopRe
     selected: function selected(index, item) {
       if (parseInt(item.status, 10) === 0) return;
       this.cartList[index].selected = this.cartList[index].selected ? false : true;
-      var i = this.selectedList.indexOf(this.cartList[index].id);
-      i > -1 ? this.selectedList.splice(i, 1) : this.selectedList.push(this.cartList[index].id);
+      var i = this.selectedList.indexOf(this.cartList[index].williamCartItem.itemId);
+      i > -1 ? this.selectedList.splice(i, 1) : this.selectedList.push(this.cartList[index].williamCartItem.itemId);
       this.isAllselected = this.selectedList.length == this.cartList.length;
       this.sum();
     },
@@ -686,15 +681,15 @@ var _product = __webpack_require__(/*! @/api/product */ 192);function _interopRe
     },
     // 减少数量(执行接口)
     sub: function sub(item, index) {
-      if (this.cartList[index].number <= 1) {
+      if (this.cartList[index].williamCartItem.goodsCnt <= 1) {
         return;
       }
-      this.cartList[index].number--;
+      this.cartList[index].williamCartItem.goodsCnt--;
       this.numberChange(item);
     },
     // 增加数量(执行接口)
     add: function add(item, index) {
-      this.cartList[index].number++;
+      this.cartList[index].williamCartItem.goodsCnt++;
       this.numberChange(item, undefined, index, 'add');
     },
     // 控制可输入购物车商品数量
@@ -706,20 +701,20 @@ var _product = __webpack_require__(/*! @/api/product */ 192);function _interopRe
                   _this10.cartList[index].number = data.detail.value;
                 }_context7.next = 3;return (
                   _this10.$http.post("".concat(_product.cartItemUpdateNum), {
-                    sku_id: item.sku_id,
-                    num: item.number }).
+                    itemId: item.williamCartItem.itemId,
+                    type: type == 'add' ? 1 : 2 }).
                   then(function (r) {
                     if (r.code === 200) {
                       _this10.sum();
                     } else {
                       if (type === 'add') {
-                        _this10.cartList[index].number--;
+                        _this10.cartList[index].williamCartItem.goodsCnt--;
                       }
                       _this10.$mHelper.toast(r.message);
                     }
                   }).catch(function () {
                     if (type === 'add') {
-                      _this10.cartList[index].number--;
+                      _this10.cartList[index].williamCartItem.goodsCnt--;
                     }
                   }));case 3:case "end":return _context7.stop();}}}, _callee7);}))();
     },
@@ -749,9 +744,10 @@ var _product = __webpack_require__(/*! @/api/product */ 192);function _interopRe
       for (var i = 0; i < len; i++) {
         if (this.cartList[i].selected) {
           arr.push(this.cartList[i]);
-          this.sumPrice = this.arrSort(arr);
         }
       }
+      console.log(arr);
+      this.sumPrice = this.arrSort(arr);
       this.sumPrice = this.sumPrice.toFixed(2);
     },
     // 向下舍去小数点后两位
@@ -759,59 +755,68 @@ var _product = __webpack_require__(/*! @/api/product */ 192);function _interopRe
       return Math.floor(val * 100) / 100;
     },
     // 计算相同商品不同规格价格
-    arrSort: function arrSort(arr) {var _this12 = this;
-      var map = {},
-      dest = [];
+    arrSort: function arrSort(arr) {
+      var sumP = 0;
       for (var i = 0; i < arr.length; i++) {
-        var ai = arr[i];
-        if (!map[ai.product.id]) {
-          dest.push({
-            id: ai.product.id,
-            num: 0,
-            price: 0,
-            data: [ai] });
-
-          map[ai.product.id] = ai;
-        } else {
-          for (var j = 0; j < dest.length; j++) {
-            var dj = dest[j];
-            if (dj.data[0].product.id === ai.product.id) {
-              dj.data.push(ai);
-              break;
-            }
-          }
-        }
+        console.log(arr[i].williamCartItem.goodsUnit);
+        sumP += arr[i].williamCartItem.goodsUnit * arr[i].williamCartItem.goodsCnt;
       }
-      var discountArr = [];
-      dest.forEach(function (item) {
-        item.data.forEach(function (item2) {
-          item.num += parseInt(item2.number, 10);
-          item.price += parseInt(item2.number, 10) * item2.price;
-        });
-        var ladderPreferential = item.data[0].ladderPreferential;
-        for (var _i = 0; _i < ladderPreferential.length; _i++) {
-          if (item.num >= parseInt(ladderPreferential[_i].quantity, 10)) {
-            ladderPreferential[_i].num = item.num;
-            ladderPreferential[_i].itemPrice = item.data[0].price;
-            ladderPreferential[_i].totalPrice = item.price;
-            discountArr.push(ladderPreferential[_i]);
-            break;
-          }
-        }
-      });
-      var amount = 0;
-      var discount = 0;
-      discountArr.forEach(function (item2) {
-        if (parseInt(item2.type, 10) === 1) {
-          discount += item2.price * item2.num;
-        } else {
-          discount += item2.totalPrice - _this12.floor(item2.itemPrice * item2.price / 100) * item2.num;
-        }
-      });
-      dest.forEach(function (item) {
-        amount += item.price;
-      });
-      return amount - discount;
+      console.log(sumP);
+      return sumP;
+      // 	const map = {},
+      // 		dest = [];
+      // 	for (let i = 0; i < arr.length; i++) {
+      // 		const ai = arr[i];
+      // 		if (!map[ai.williamGoods.id]) {
+      // 			dest.push({
+      // 				id: ai.williamGoods.id,
+      // 				num: 0,
+      // 				price: 0,
+      // 				data: [ai]
+      // 			});
+      // 			map[ai.williamGoods.id] = ai;
+      // 		} else {
+      // 			for (let j = 0; j < dest.length; j++) {
+      // 				const dj = dest[j];
+      // 				if (dj.data[0].williamGoods.id === ai.williamGoods.id) {
+      // 					dj.data.push(ai);
+      // 					break;
+      // 				}
+      // 			}
+      // 		}
+      // 	}
+      // 	const discountArr = []
+      // 	console.log(item)
+      // 	console.log(item2)
+      // 	dest.forEach(item => {
+      // 		item.data.forEach(item2 => {
+      // 			item.num += parseInt(item2.number, 10)
+      // 			item.price += parseInt(item2.number, 10) * item2.price;
+      // 		})
+      // 		const ladderPreferential = item.data[0].ladderPreferential;
+      // 		for (let i = 0; i < ladderPreferential.length; i++) {
+      // 			if (item.num >= parseInt(ladderPreferential[i].quantity, 10)) {
+      // 				ladderPreferential[i].num = item.num
+      // 				ladderPreferential[i].itemPrice = item.data[0].price
+      // 				ladderPreferential[i].totalPrice = item.price
+      // 				discountArr.push(ladderPreferential[i])
+      // 				break;
+      // 			}
+      // 		}
+      // 	});
+      // 	let amount = 0;
+      // 	let discount = 0;
+      // 	discountArr.forEach(item2 => {
+      // 		if (parseInt(item2.type, 10) === 1) {
+      // 			discount += item2.price * item2.num
+      // 		} else {
+      // 			discount += (item2.totalPrice - this.floor(item2.itemPrice * item2.price / 100) * item2.num)
+      // 		}
+      // 	});
+      // 	dest.forEach(item => {
+      // 		amount += item.price;
+      // 	});
+      // 	return amount - discount;
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 

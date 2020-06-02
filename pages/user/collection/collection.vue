@@ -8,24 +8,24 @@
           :key="index"
           class="rf-swipe-item"
           v-for="(item, index) in collectionList">
-          <view class="rf-list-item" @tap="navTo(`/pages/product/product?id=${item.product.id}`)">
+          <view class="rf-list-item" @tap="navTo(`/pages/product/product?id=${item.id}`)">
           <view class="left">
-            <rf-image class="image" :isPreviewImage="false" :src="item.product && item.product.picture"></rf-image>
+            <rf-image class="image" :isPreviewImage="false" :src="item.imgs"></rf-image>
           </view>
           <view class="mid">
-            <view class="title in2line">{{ item.product && item.product.name }}</view>
+            <view class="title in2line">{{ item.name }}</view>
             <view class="data">
-              <view class="item"><text class="iconfont icontuandui"></text>推荐 {{item.product && item.product.collect_num || 0 }}</view>
-              <view class="item"><text class="iconfont iconkechakan"></text>浏览 {{item.product && item.product.view || 0 }}</view>
+              <view class="item"><text class="iconfont icontuandui"></text>推荐 {{item.favorite || 0 }}</view>
+              <view class="item"><text class="iconfont iconkechakan"></text>浏览 {{item.favorite|| 0 }}</view>
             </view>
             <view class="state-wrapper">
-              <text class="state" v-if="parseInt(item.product && item.product.product_status) === 0">
-                失效
+              <text class="state" v-if="parseInt(item.putaway) === 2">
+                商品已下架
               </text>
             </view>
             <view class="bottom">
-              <text class="price">{{ item.product && item.product.minPriceSku.price }}</text>
-              <text>{{ item.created_at | time }}</text>
+              <text class="price">{{ item.sell}}</text>
+              <text>{{ item.createTime | time }}</text>
             </view>
           </view>
         </view>
@@ -71,7 +71,7 @@
 		},
 		filters: {
 			time(val) {
-				return moment(val * 1000).format('YYYY-MM-DD HH:mm')
+				return moment(new Date(val).getTime()).format('YYYY-MM-DD HH:mm')
 			}
 		},
 		onShow() {
@@ -113,8 +113,10 @@
 			},
 			// 获取收藏列表
 			async getCollectionList(type) {
-				await this.$http.get(`${collectList}`, {
-					page: this.page
+				await this.$http.post(`${collectList}`, {
+					startPage: this.page,
+					pageSize : 10,
+					keyName : 1
 				}).then(r => {
 					this.loading = false;
 					if (type === 'refresh') {

@@ -223,7 +223,12 @@
 				});
 			},
 			async getGuessYouLikeList() {
-				await this.$http.get(`${guessYouLikeList}`, {}).then(r => {
+				console.log("猜你喜欢")
+				await this.$http.post(`${guessYouLikeList}`, {
+					startPage : this.page,
+					pageSize : 10
+				}).then(r => {
+					console.log(r.data)
 				  this.loading = false;
 					this.loadingType = r.data.length === 10 ? 'more' : 'nomore';
 					this.goodsList = [...this.goodsList, ...r.data];

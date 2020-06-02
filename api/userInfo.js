@@ -10,27 +10,28 @@ const memberInfo = '/william-customer/getCustomerInfo';
 const memberUpdate = '/william-customer/updateCustomerInfo';
 
 // 收货地址列表
-const addressList = '/tiny-shop/v1/member/address/index';
+const addressList = '/william-address/getCustomerAddressList';
 // 默认收货地址
-const addressDefault = '/tiny-shop/v1/member/address/default';
+const addressDefault = '/william-address/updateDefaultAddress';
 // 默认收货地址
-const addressDetail = '/tiny-shop/v1/member/address/view';
+const addressDetail = '/william-address/getDefaultAddress';
 // 创建收货地址
-const addressCreate = '/tiny-shop/v1/member/address/create';
+const addressCreate = '/william-address/saveAddress';
 // 修改收货地址
-const addressUpdate = '/tiny-shop/v1/member/address/update';
-// 修改收货地址
-const addressDelete = '/tiny-shop/v1/member/address/delete';
+const addressUpdate = '/william-address/updateAddress';
+// 删除收货地址
+const addressDelete = '/william-address/deleteAddress';
 
 // 获取优惠券列表
-const couponList = '/tiny-shop/v1/marketing/coupon-type/index';
+const couponList = '/william-coupon/getCouponCenter';
 // 获取我的优惠券列表
-const myCouponList = '/tiny-shop/v1/member/coupon/index';
+const myCouponList = '/william-coupon/getCouponByType';
 // 优惠券详情
-const couponDetail = '/tiny-shop/v1/marketing/coupon-type/view';
+const couponDetail = '/william-coupon/getCouponDetail';
 // 领取优惠券
-const couponReceive = '/tiny-shop/v1/marketing/coupon-type/create';
-const couponClear = '/tiny-shop/v1/member/coupon/clear';
+const couponReceive = '/william-coupon/saveCoupon';
+// 清空失效优惠券
+const couponClear = '/william-coupon/deleteExpireCoupon';
 
 // 获取我的订单
 const orderList = '/william-order/getOrderListByStatus';
@@ -46,15 +47,15 @@ const closeOrderRefundApply = '/tiny-shop/v1/member/order-product/refund-close';
 // 获取订单详情
 const orderDetail = '/william-order/getOrderDetail';
 // 删除已关闭订单
-const orderDelete = '/tiny-shop/v1/member/order/delete';
+const orderDelete = '/william-order/deleteOrder';
 
 // 获取我的足迹
 const footPrintList = '/william-footmark/getFootmarkByUid';
 // 删除我的足迹
-const footPrintDel = '/tiny-shop/v1/member/footprint/delete';
+const footPrintDel = '/william-footmark/deleteFootmarkById';
 
 // 收藏列表
-const collectList = '/tiny-shop/v1/member/collect/index';
+const collectList = '/william-collect/getMyCollect';
 
 // 积分余额日志
 const creditsLogList = '/tiny-shop/v1/member/credits-log/index';

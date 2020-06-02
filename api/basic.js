@@ -7,7 +7,7 @@
  */
 
 // 获取省市区列表
-const provinceList = '/tiny-shop/v1/common/provinces/index';
+const provinceList = '/william-area/areaList';
 // 收藏商品
 const collectCreate = '/william-collect/saveCollect';
 // 删除收藏商品

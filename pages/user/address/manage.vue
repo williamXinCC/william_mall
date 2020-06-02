@@ -2,11 +2,11 @@
 	<view class="address-manage rf-row-wrapper">
 		<view class="row b-b">
 			<text class="tit">联系人</text>
-			<input class="input" type="text" v-model="addressData.realname" @blur="handleRealNameChange" placeholder="收货人姓名" placeholder-class="placeholder" />
+			<input class="input" type="text" v-model="addressData.receivingName" @blur="handleRealNameChange" placeholder="收货人姓名" placeholder-class="placeholder" />
 		</view>
 		<view class="row b-b">
 			<text class="tit">手机号</text>
-			<input class="input" type="number" v-model="addressData.mobile" @blur="handleMobileChange" placeholder="收货人手机号码" placeholder-class="placeholder" />
+			<input class="input" type="number" v-model="addressData.receivingPhone" @blur="handleMobileChange" placeholder="收货人手机号码" placeholder-class="placeholder" />
 		</view>
 		<view class="row b-b">
 			<text class="tit">选择地址</text>
@@ -18,11 +18,11 @@
 		</view>
 		<view class="row b-b">
 			<text class="tit">详细地址</text>
-			<input class="input" type="text" v-model="addressData.address_details" @blur="bindAddressDetailsChange" placeholder="请输入详细地址" placeholder-class="placeholder" />
+			<input class="input" type="text" v-model="addressData.location" @blur="bindAddressDetailsChange" placeholder="请输入详细地址" placeholder-class="placeholder" />
 		</view>
 		<view class="row default-row">
 			<text class="tit">设为默认</text>
-			<switch :checked="addressData.is_default ? true : false" color="#fa436a" @change="switchChange" />
+			<switch :checked="addressData.checked ? true : false" color="#fa436a" @change="switchChange" />
 		</view>
 		<button class="add-btn" @tap="confirm">提交</button>
 
@@ -87,9 +87,9 @@
 					title
 				});
 			},
-	    // 获取收货地址
+	        // 获取收货地址
 			async getAddressDetail(id) {
-				await this.$http.get(`${addressDetail}`, {
+				await this.$http.post(`${addressDetail}`, {
 					id
 				}).then(async r => {
 					this.addressData = r.data;
@@ -128,14 +128,15 @@
 				}
 			},
 			async handleAddressUpdate (data) {
-				await this.$http.put(`${addressUpdate}?id=${data.id}`, {
-					realname: data.realname,
-					mobile: data.mobile,
-					address_details: data.address_details,
-					is_default: data.is_default ? 1 : 0,
-					province_id: data.province_id,
-					city_id: data.city_id,
-					area_id: data.area_id
+				await this.$http.post(`${addressUpdate}`, {
+					id : data.id,
+					receivingName: data.realname,
+					receivingPhone: data.mobile,
+					location: data.address_details,
+					checked: data.is_default ? 1 : 0,
+					province: data.province_id,
+					city: data.city_id,
+					county: data.area_id
 				}).then(() =>{
 						this.$mHelper.toast('收货地址修改成功！');
 						this.$mRouter.back();
@@ -143,13 +144,13 @@
 			},
 			async handleAddressCreate (data) {
 				await this.$http.post(`${addressCreate}`, {
-					realname: data.realname,
-					mobile: data.mobile,
-					address_details: data.address_details,
-					is_default: data.is_default ? 1 : 0,
-					province_id: data.province_id,
-					city_id: data.city_id,
-					area_id: data.area_id
+					receivingName: data.realname,
+					receivingPhone: data.mobile,
+					location: data.address_details,
+					checked: data.is_default ? 1 : 2,
+					province: data.province_id,
+					city: data.city_id,
+					county: data.area_id
 				}).then(() =>{
 						this.$mHelper.toast('收货地址修改成功！');
 						this.$mRouter.back();

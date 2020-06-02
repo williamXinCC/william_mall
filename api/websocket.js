@@ -2,7 +2,6 @@
 const tinyServiceUploadFile =  '/tiny-service/v1/common/file/images';
 // 客服配置
 const questionsIndex = '/tiny-service/v1/questions/index';
-
 // 问题详情
 const questionsView = '/tiny-service/v1/questions/view';
 

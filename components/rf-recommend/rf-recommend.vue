@@ -12,15 +12,15 @@
 				@tap="navTo(item === 0 ? '' : item.id)"
 			>
 				<view class="image-wrapper">
-					<image :src="item.picture" mode="aspectFill"></image>
-					 <text class="sketch in1line">{{ item.sketch }}</text>
+					<image :src="item.imgs" mode="aspectFill"></image>
+					 <text class="sketch in1line">{{ item.title }}</text>
 				</view>
 				<text class="title clamp in2line" v-if="item.name">{{item.name}}</text>
 				<view class="last-line" v-if="item.name">
-					<text class="price in1line">{{item.price}}
-						<text class="m-price" v-if="item.market_price > item.price">¥ {{ item.market_price }}</text>
+					<text class="price in1line">{{item.sell}}
+						<text class="m-price" v-if="item.marketSell > item.sell">¥ {{ item.sell }}</text>
 					</text>
-					<text class="sales in1line"><text class="red">{{ item.sales }}</text>付款</text>
+					<text class="sales in1line"><text class="red">{{ item.sellTotal }}</text>付款</text>
 				</view>
 			</view>
 		</view>
@@ -37,6 +37,7 @@ import {guessYouLikeList} from "@/api/product";
 export default {
 	name: 'rfRecommend',
 	props: {
+	  page : 0,
 	  list: {
       type: Array,
       default () {
@@ -61,7 +62,10 @@ export default {
       }
     },
     async getGuessYouLikeList() {
-      await this.$http.get(`${guessYouLikeList}`).then(r => {
+      await this.$http.post(`${guessYouLikeList}`,{
+		  startPage : this.page + 1,
+		  pageSize : 10
+	  }).then(r => {
         this.guessYouLikeList = r.data
       });
     },

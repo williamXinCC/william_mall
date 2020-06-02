@@ -51,10 +51,10 @@
 				</view>
 			</view>
 
-			<!-- 我的订单 -->
+			<!-- 我的订单搜索 -->
 			<view class="promotion-center">
-				<list-cell icon="iconfapiaoguanli" iconColor="#e07472"
-				           @eventClick="navTo(`/pages/index/search/search?keyword=搜索我的订单&type=order`)" title="搜索订单"></list-cell>
+			<!-- 	<list-cell icon="iconfapiaoguanli" iconColor="#e07472"
+				           @eventClick="navTo(`/pages/index/search/search?keyword=搜索我的订单&type=order`)" title="搜索订单"></list-cell> -->
 				<view class="order-section">
 					<view
 							class="order-item"

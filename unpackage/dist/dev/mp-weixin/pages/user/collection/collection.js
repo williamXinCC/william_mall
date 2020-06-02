@@ -114,9 +114,9 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   var l0 = _vm.__map(_vm.collectionList, function(item, index) {
-    var m0 = parseInt(item.product && item.product.product_status)
+    var m0 = parseInt(item.putaway)
 
-    var f0 = _vm._f("time")(item.created_at)
+    var f0 = _vm._f("time")(item.createTime)
 
     return {
       $orig: _vm.__get_orig(item),
@@ -239,7 +239,7 @@ var _moment = _interopRequireDefault(__webpack_require__(/*! @/common/moment */ 
   },
   filters: {
     time: function time(val) {
-      return (0, _moment.default)(val * 1000).format('YYYY-MM-DD HH:mm');
+      return (0, _moment.default)(new Date(val).getTime()).format('YYYY-MM-DD HH:mm');
     } },
 
   onShow: function onShow() {
@@ -281,8 +281,10 @@ var _moment = _interopRequireDefault(__webpack_require__(/*! @/common/moment */ 
     },
     // 获取收藏列表
     getCollectionList: function getCollectionList(type) {var _this3 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:_context3.next = 2;return (
-                  _this3.$http.get("".concat(_userInfo.collectList), {
-                    page: _this3.page }).
+                  _this3.$http.post("".concat(_userInfo.collectList), {
+                    startPage: _this3.page,
+                    pageSize: 10,
+                    keyName: 1 }).
                   then(function (r) {
                     _this3.loading = false;
                     if (type === 'refresh') {

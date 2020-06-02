@@ -105,16 +105,16 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   var l0 = _vm.__map(_vm.couponList, function(row, index) {
-    var m0 = parseInt(row.range_type, 10)
+    var m0 = parseInt(row.useType, 10)
 
-    var f0 = _vm._f("time")(row.start_time)
+    var f0 = _vm._f("time")(row.expiryStartTime)
 
-    var f1 = _vm._f("time")(row.end_time)
+    var f1 = _vm._f("time")(row.expiryEndTime)
 
-    var f2 = _vm._f("timeFull")(row.use_time)
+    var f2 = _vm._f("timeFull")(row.useTime)
 
-    var m1 = parseInt(row.max_fetch, 10)
-    var m2 = parseInt(row.range_type, 10)
+    var m1 = parseInt(row.perLimit, 10)
+    var m2 = parseInt(row.useType, 10)
     return {
       $orig: _vm.__get_orig(row),
       m0: m0,

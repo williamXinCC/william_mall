@@ -28,14 +28,14 @@
           <view class="carrier">
             <view class="left">
               <view class="in1line title">
-                <text class="cell-icon">{{ parseInt(row.couponType.range_type, 10) === 2 ? '限' : '全' }}</text>
-                {{row.title}}
+                <text class="cell-icon">{{ parseInt(row.useType, 10) === 2 ? '限' : '全' }}</text>
+                {{row.name}}
               </view>
               <view class="term" v-if="state !== 2">
-                {{ row.start_time | time }} ~ {{ row.end_time | time }}
+                {{ row.expiryStartTime | time}} ~ {{ row.expiryEndTime | time}}
               </view>
               <view class="term" v-else>
-                使用时间：{{ row.use_time | timeFull }}
+                使用时间：{{ row.useTime | time}}
               </view>
               <view class="overdue" v-if="state === 3">
                 <i class="iconfont iconyiguoqi2 "></i>
@@ -44,21 +44,21 @@
                 <i class="iconfont iconyishiyong"></i>
               </view>
               <view class="usage">
-                {{parseInt(row.couponType.max_fetch, 10) === 0 ? '不限' : `每人限领${row.couponType.max_fetch}` }}
-                已领{{ row.couponType.get_count }}
-                <text v-if="row.couponType.percentage">剩余{{ row.couponType.percentage }}%</text>
+                {{parseInt(row.perLimit, 10) === 0 ? '不限' : `每人限领${row.perLimit}` }}
+                已领{{ row.couponCount }}
+                <text v-if="row.residueCount">剩余{{ row.residueCount }}</text>
               </view>
             </view>
             <view class="right" :class="{ invalid: state !== 1 }">
               <view class="ticket">
                 <view class="num">
-                  {{ row.money ? '￥' + row.money : row.discount + '折' }}
+                  {{ row.couponTypeValue != 0 ? '￥' + row.couponTypeValue : row.couponTypeDiscount + '折' }}
                 </view>
               </view>
               <view class="criteria">
-                满{{row.at_least}}使用
+                满{{row.useLevel}}使用
               </view>
-              <view class="use view" @tap="show(row)" v-if="parseInt(row.couponType.range_type, 10) === 2">
+              <view class="use view" @tap="show(row)" v-if="parseInt(row.useType, 10) === 2">
                 商品
               </view>
               <view class="use" v-if="state == 1" @tap="navTo('/pages/category/category', 'tab')">
@@ -134,11 +134,11 @@
 		filters: {
 			// 格式化时间
 			time(val) {
-				return moment(val * 1000).format('YYYY-MM-DD')
+				return moment(new Date(val).getTime()).format('YYYY-MM-DD')
 			},
 			// 格式化时间
 			timeFull(val) {
-				return moment(val * 1000).format('YYYY-MM-DD HH:mm:ss')
+				return moment(new Date(val).getTime()).format('YYYY-MM-DD HH:mm:ss')
 			}
 		},
 		//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 "enablePullDownRefresh": true
@@ -170,6 +170,13 @@
 		methods: {
 			// 显示抽屉(可使用商品)
 			show(item) {
+				// await this.$http.post(`${getCouponGoods}`,{
+				// 	keyName : ,
+				// 	startPage : 1,
+				// 	pageSize : 10
+				// }).then(() => {
+				// 	this.getMyCouponList();
+				// })
 				if (item.usableProduct.length === 0) return;
 				this.currentCoupon = item;
 				this.showRight = true
@@ -224,10 +231,12 @@
 			},
 			// 获取我的优惠券列表
 			async getMyCouponList(type) {
-				await this.$http.get(`${myCouponList}`, {
-					page: this.page,
-					state: this.state
+				await this.$http.post(`${myCouponList}`, {
+					startPage: this.page,
+					keyName: this.state,
+					pageSize : 10
 				}).then(r => {
+					console.log('优惠券数据',r.data)
 					this.loading = false;
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();

@@ -105,7 +105,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   var l0 = _vm.__map(_vm.addressList, function(item, index) {
-    var m0 = parseInt(item.is_default, 10)
+    var m0 = parseInt(item.checked, 10)
     return {
       $orig: _vm.__get_orig(item),
       m0: m0
@@ -245,7 +245,7 @@ var _userInfo = __webpack_require__(/*! @/api/userInfo */ 248);function _interop
     },
     // 删除地址
     handleAddressDelete: function handleAddressDelete(id) {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:_context.next = 2;return (
-                  _this2.$http.delete("".concat(_userInfo.addressDelete, "?id=").concat(id)).then(function () {
+                  _this2.$http.post("".concat(_userInfo.addressDelete), { keyName: id }).then(function () {
                     _this2.page = 1;
                     _this2.addressList.length = 0;
                     _this2.getAddressList();
@@ -268,9 +268,7 @@ var _userInfo = __webpack_require__(/*! @/api/userInfo */ 248);function _interop
     },
     // 获取收货地址列表
     getAddressList: function getAddressList(type) {var _this3 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:_context2.next = 2;return (
-                  _this3.$http.get("".concat(_userInfo.addressList), {
-                    page: _this3.page }).
-                  then(function (r) {
+                  _this3.$http.post("".concat(_userInfo.addressList), {}).then(function (r) {
                     _this3.loading = false;
                     if (type === 'refresh') {
                       uni.stopPullDownRefresh();

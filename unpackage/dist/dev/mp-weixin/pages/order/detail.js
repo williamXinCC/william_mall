@@ -559,8 +559,8 @@ var _userInfo = __webpack_require__(/*! @/api/userInfo */ 248);function _interop
     },
     // 获取订单详情
     getOrderDetail: function getOrderDetail() {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:_context.next = 2;return (
-                  _this.$http.get("".concat(_userInfo.orderDetail), {
-                    id: _this.order_id }).
+                  _this.$http.post("".concat(_userInfo.orderDetail), {
+                    keyName: _this.order_id }).
                   then(function (r) {
                     _this.loading = false;
                     _this.orderDetail = r.data;

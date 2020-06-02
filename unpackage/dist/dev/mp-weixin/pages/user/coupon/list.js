@@ -103,14 +103,14 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   var l0 = _vm.__map(_vm.couponList, function(item, index) {
-    var m0 = parseInt(item.range_type, 10)
+    var m0 = parseInt(item.useType, 10)
 
-    var f0 = _vm._f("time")(item.start_time)
+    var f0 = _vm._f("time")(item.expiryStartTime)
 
-    var f1 = _vm._f("time")(item.end_time)
+    var f1 = _vm._f("time")(item.expiryEndTime)
 
-    var m1 = parseInt(item.range_type, 10)
-    var m2 = parseInt(item.max_fetch, 10)
+    var m1 = parseInt(item.useType, 10)
+    var m2 = parseInt(item.perLimit, 10)
     return {
       $orig: _vm.__get_orig(item),
       m0: m0,
@@ -231,7 +231,7 @@ var _moment = _interopRequireDefault(__webpack_require__(/*! @/common/moment */ 
   },
   filters: {
     time: function time(val) {
-      return (0, _moment.default)(val * 1000).format('YYYY-MM-DD HH:mm');
+      return (0, _moment.default)(new Date(val).getTime()).format('YYYY-MM-DD HH:mm');
     } },
 
   onLoad: function onLoad(options) {
@@ -256,8 +256,10 @@ var _moment = _interopRequireDefault(__webpack_require__(/*! @/common/moment */ 
     },
     //获取收货地址列表
     getCouponList: function getCouponList(type) {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:_context.next = 2;return (
-                  _this.$http.get("".concat(_userInfo.couponList), {
-                    page: _this.page }).
+                  _this.$http.post("".concat(_userInfo.couponList), {
+                    keyName: type,
+                    startPage: _this.page,
+                    pageSize: 10 }).
                   then(function (r) {
                     _this.loading = false;
                     if (type === 'refresh') {
@@ -278,18 +280,25 @@ var _moment = _interopRequireDefault(__webpack_require__(/*! @/common/moment */ 
     getCoupon: function getCoupon(item) {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:if (!
                 _this2.type) {_context2.next = 2;break;}return _context2.abrupt("return");case 2:if (!(
 
-                parseInt(item.is_get, 10) === 0)) {_context2.next = 5;break;}
+                parseInt(item.count, 10) === 0)) {_context2.next = 5;break;}
                 _this2.$mHelper.toast('该优惠券不可领取');return _context2.abrupt("return");case 5:_context2.next = 7;return (
 
 
                   _this2.$http.post("".concat(_userInfo.couponReceive), {
-                    id: item.id }).
-                  then(function () {
-                    _this2.$mHelper.toast('领取成功');
-                    _this2.loading = true;
-                    _this2.page = 1;
-                    _this2.couponList.length = 0;
-                    _this2.getCouponList();
+                    keyName: item.id }).
+                  then(function (r) {
+                    console.log('12312');
+                    if (r.data == 1) {
+                      _this2.$mHelper.toast('领取成功');
+                      _this2.loading = true;
+                      _this2.page = 1;
+                      _this2.couponList.length = 0;
+                      _this2.getCouponList();
+                    } else if (r.data == 2) {
+                      _this2.$mHelper.toast('您已领取了当前优惠券');
+                    } else if (r.data == 3) {
+                      _this2.$mHelper.toast('对不起,优惠券已被他人领取');
+                    }
                   }));case 7:case "end":return _context2.stop();}}}, _callee2);}))();
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))

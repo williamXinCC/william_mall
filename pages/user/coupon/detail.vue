@@ -7,34 +7,34 @@
 					<view class="carrier">
 						<view class="left">
 							<view class="in1line title">
-								<text class="cell-icon">{{ parseInt(row.range_type, 10) === 2 ? '限' : '全' }}</text>
+								<text class="cell-icon">{{ parseInt(row.useType, 10) === 2 ? '限' : '全' }}</text>
 								{{row.title}}
 							</view>
 							<view class="term" v-if="state !== 2">
-								{{ row.start_time | time }} ~ {{ row.end_time | time }}
+								{{ row.expiryStartTime | time }} ~ {{ row.expiryEndTime | time }}
 							</view>
 							<view class="term" v-else>
-								使用时间：{{ row.use_time | timeFull }}
+								使用时间：{{ row.useTime | timeFull }}
 							</view>
 							<view class="icon shixiao" v-if="state === 3" />
 							<view class="used" v-if="state === 2">已使用</view>
 							<view class="usage">
-								{{parseInt(row.max_fetch, 10) === 0 ? '不限' : `每人限领 ${row.max_fetch}` }}
-								总领取 {{ row.get_count }}
-								<text v-if="row.percentage">剩余{{ row.percentage }}%</text>
+								{{parseInt(row.perLimit, 10) === 0 ? '不限' : `每人限领 ${row.perLimit}` }}
+								总领取 {{ row.couponCount }}
+								<text v-if="row.residueCount">剩余{{ row.residueCount }}%</text>
 							</view>
 						</view>
 						<view class="right" :class="{ invalid: state !== 1 }">
 							<view class="ticket">
 								<view class="num">
-									{{ row.money ? '￥' + row.money : row.discount + '折' }}
+									{{ row.couponTypeValue ? '￥' + row.couponTypeValue : row.discount + '折' }}
 								</view>
 							</view>
 							<view class="criteria">
-								满{{row.at_least}}使用
+								满{{row.useLevel}}使用
 							</view>
 							<view class="btn-group">
-								<view class="use view" @tap="show(row)" v-if="parseInt(row.range_type, 10) === 2">
+								<view class="use view" @tap="show(row)" v-if="parseInt(row.useType, 10) === 2">
 									商品
 								</view>
 								<view class="use" @tap="getCoupon(row)">

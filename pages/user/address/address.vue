@@ -4,12 +4,12 @@
       <view class="rf-list-item" v-for="(item, index) in addressList" :key="index" @tap="checkAddress(item)">
         <view class="mid" @touchstart="goTouchStart(item.id)" @touchmove="goTouchMove" @touchend="goTouchEnd">
           <view class="address-box">
-            <text v-if="parseInt(item.is_default, 10) === 1" class="tag">默认</text>
-            <text class="address in1line">{{item.address_name}} {{item.address_details}}</text>
+            <text v-if="parseInt(item.checked, 10) === 1" class="tag">默认</text>
+            <text class="address in1line">{{item.type == 1 ? "家" : item.type == 2 ? "学校" : "随机" }} {{item.location}}</text>
           </view>
           <view class="u-box">
-            <text class="name">{{item.realname}}</text>
-            <text class="mobile">{{item.mobile}}</text>
+            <text class="name">{{item.receivingName}}</text>
+            <text class="mobile">{{item.receivingPhone}}</text>
           </view>
         </view>
         <view class="right">
@@ -90,7 +90,7 @@
 			},
       // 删除地址
       async handleAddressDelete(id) {
-				await this.$http.delete(`${addressDelete}?id=${id}`).then(() => {
+				await this.$http.post(`${addressDelete}`,{keyName : id}).then(() => {
           this.page = 1;
           this.addressList.length = 0;
           this.getAddressList();
@@ -113,9 +113,7 @@
 			},
 			// 获取收货地址列表
 			async getAddressList(type) {
-				await this.$http.get(`${addressList}`, {
-					page: this.page
-				}).then(r => {
+				await this.$http.post(`${addressList}`, {}).then(r => {
 					this.loading = false;
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();

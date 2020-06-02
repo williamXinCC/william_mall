@@ -778,15 +778,14 @@ var _userInfo = __webpack_require__(/*! @/api/userInfo */ 248);function _interop
                   }));case 6:case "end":return _context2.stop();}}}, _callee2);}))();
     },
     // 跳转至评价列表
-    toEvaluateList: function toEvaluateList() {var _this4 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:
-                console.log('跳去列表 ================');if (!(
-                !_this4.commentInfo || _this4.commentInfo.size == 0)) {_context3.next = 3;break;}return _context3.abrupt("return");case 3:_context3.next = 5;return (
+    toEvaluateList: function toEvaluateList() {var _this4 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:if (!(
+                !_this4.commentInfo || _this4.commentInfo.size == 0)) {_context3.next = 2;break;}return _context3.abrupt("return");case 2:_context3.next = 4;return (
                   _this4.$http.post("".concat(_product.productEvaluateCount), { keyName: _this4.productDetail.id }).then(function (r) {
                     console.log(r);
                     _this4.productEvaluateCount = r.data;
-                  }));case 5:
+                  }));case 4:
                 // this.$mRouter.push({route: `/pages/order/evaluation/list?comment_num=${this.commentCount}&evaluateStat=${JSON.stringify(this.productDetail.evaluateStat)}`});
-                _this4.$mRouter.push({ route: "/pages/order/evaluation/list?goodsId=".concat(_this4.productDetail.id, "&productEvaluateCount=").concat(JSON.stringify(_this4.productEvaluateCount)) });case 6:case "end":return _context3.stop();}}}, _callee3);}))();
+                _this4.$mRouter.push({ route: "/pages/order/evaluation/list?goodsId=".concat(_this4.productDetail.id, "&productEvaluateCount=").concat(JSON.stringify(_this4.productEvaluateCount)) });case 5:case "end":return _context3.stop();}}}, _callee3);}))();
     },
     numberChange: function numberChange(data) {
       this.cartCount = data.number;

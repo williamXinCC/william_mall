@@ -9,27 +9,27 @@ const homePage = '/william-home/getHomePage';
 // 产品分类列表
 const productCategory = '/william-goods-category/getGoodsCategoryTreeList';
 // 首页推荐分类
-const productCateList = '/tiny-shop/v1/product/cate/list';
+const productCateList = '/william-goods-category/getHomePageRecommendCategory';
 // 分类商品列表
 const productList = '/william-goods/getGoodsListByCategory';
 // 产品详情页面
 const productDetail = '/william-goods/getGoodsInfoPage';
 // 猜你喜欢
-const guessYouLikeList = '/tiny-shop/v1/product/product/guess-you-like';
+const guessYouLikeList = '/william-goods/getGuessYouLike';
 // 添加购物车
 const cartItemCreate = '/tiny-shop/v1/member/cart-item/create';
 // 购物车列表
-const cartItemList = '/tiny-shop/v1/member/cart-item/index';
+const cartItemList = '/william-cart/getCartByUid';
 // 购物车列表
 const cartItemCount = '/tiny-shop/v1/member/cart-item/count';
 // 删除购物车商品
-const cartItemDel = '/tiny-shop/v1/member/cart-item/delete-ids';
+const cartItemDel = '/william-cart/deleteCartItem';
 // 清空购物车
-const cartItemClear = '/tiny-shop/v1/member/cart-item/clear';
+const cartItemClear = '/william-cart/deleteAllCartItem';
 // 修改购物车商品数量
-const cartItemUpdateNum = '/tiny-shop/v1/member/cart-item/update-num';
+const cartItemUpdateNum = '/william-cart/updateCartItemNum';
 // 修改购物车商品sku
-const cartItemUpdateSku = '/tiny-shop/v1/member/cart-item/update-sku';
+const cartItemUpdateSku = '/william-cart/updateSku';
 
 // 订单创建
 const orderCreate = '/tiny-shop/v1/order/order/create';

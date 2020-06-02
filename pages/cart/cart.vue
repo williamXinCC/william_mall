@@ -22,7 +22,7 @@
       <view class="btn-clear" @tap="clearCart({lose_status: 1})">清空失效商品</view>
       <view class="row" v-for="(row,index) in cartList" :key="index">
         <!-- 删除按钮 -->
-        <view class="menu" @tap.stop="deleteCartItem(row.sku_id, 'one')">
+        <view class="menu" @tap.stop="deleteCartItem(row.williamCartItem.itemId, 'one')">
           <i class="iconfont icon iconiconfontshanchu1"></i>
         </view>
         <!-- 商品 -->
@@ -31,32 +31,32 @@
               @touchend="touchEnd(index,$event)">
           <!-- checkbox -->
           <view class="checkbox-box" @tap="selected(index, row)">
-            <view class="checkbox" :class="[parseInt(row.status, 10) === 0 ? 'checkbox-disabled' : '']">
-              <view :class="[row.selected?'on':'']"></view>
+            <view class="checkbox" :class="[row.williamCartItem.status != 1 ? 'checkbox-disabled' : '']">
+              <view :class="[row.selected? 'on':'']"></view>
             </view>
           </view>
           <!-- 商品信息 -->
           <view class="goods-info">
             <view class="img">
-              <image :src="row.product_img"></image>
+              <image :src="row.williamGoods.imgs"></image>
             </view>
             <view class="info">
-              <view class="title in2line" @tap="navTo(`/pages/product/product?id=${row.product.id}`)">{{row.product_name}}</view>
+              <view class="title in2line" @tap="navTo(`/pages/product/product?id=${row.williamGoods.id}`)">{{row.williamGoods.name}}</view>
               <view class="state-wrapper">
                 <view class="spec" @tap.stop="toggleSpec(row)">{{row.sku_name || '基础版'}}</view>
-                <view class="state" v-if="parseInt(row.status, 10) === 0">
+                <view class="state" v-if="row.williamGoods.putaway == 2">
                   已失效
                 </view>
               </view>
               <view class="price-number">
-                <view class="price" v-if="parseInt(row.status, 10) === 1">{{row.sku && row.sku.price}}</view>
-                <view class="remark" v-else>{{row.remark}}</view>
-                <view class="number" v-if="parseInt(row.status, 10) === 1">
+                <view class="price" v-if="row.williamCartItem.status == 1">{{row.williamGoods.sell}}</view>
+                <view class="remark" v-else>{{row.williamGoods.describes}}</view>
+                <view class="number" v-if="row.williamCartItem.status == 1">
                   <view class="sub" @tap.stop="sub(row, index)">
                     <text class="iconfont icon icon-jianhao"></text>
                   </view>
                   <view class="input" @tap.stop="discard">
-                    <input type="number" v-model="row.number" @input.stop="numberChange(row, $event,index)"/>
+                    <input type="number" v-model="row.williamCartItem.goodsCnt" @input.stop="numberChange(row, $event,index)"/>
                   </view>
                   <view class="add" @tap.stop="add(row, index)">
                     <text class="iconfont icon iconjia1"></text>
@@ -295,8 +295,8 @@
 			async getProductDetail(row) {
 				this.currentSkuId = row.sku_id;
 				this.currentNewSkuId = row.sku_id;
-				await this.$http.get(`${productDetail}`, {
-					id: row.product_id
+				await this.$http.post(`${productDetail}`, {
+					keyName: row.id
 				}).then(async r => {
 					this.productDetail = r.data;
 					this.specList = this.productDetail.base_attribute_format;
@@ -344,13 +344,14 @@
 					sku_ids.push(parseInt(id, 10))
 				} else {
 					for (let i = 0; i < this.cartList.length; i++) {
-						if (this.cartList[i].selected) {
-							sku_ids.push(parseInt(this.cartList[i].sku_id, 10));
+						if (this.cartList[i].williamCartItem.checked) {
+							sku_ids.push(this.cartList[i].williamCartItem.itemId);
 						}
 					}
 				}
+				console.log(sku_ids.join(","))
 				await this.$http.post(`${cartItemDel}`, {
-					sku_ids: JSON.stringify(sku_ids)
+					keyName: sku_ids.join(",")
 				}).then(() => {
 					this.selectedList.length = 0;
 					this.isAllselected = false;
@@ -376,8 +377,8 @@
 			initData() {
 				this.hasLogin = this.$mStore.getters.hasLogin;
 				if (this.hasLogin) {
-          this.theIndex = null;
-          this.oldIndex = null;
+					this.theIndex = null;
+					this.oldIndex = null;
 					this.selectedList.length = 0;
 					this.isAllselected = false;
 					this.sumPrice = 0;
@@ -394,14 +395,22 @@
 					url
 				})
 			},
-			// 获取购物车列表
+			// 获取购物车列表  TODO
 			async getCartItemList(type) {
-				await this.$http.get(`${cartItemList}`, {}, {}, this).then(r => {
-				  this.loading = false;
+				await this.$http.post(`${cartItemList}`).then(r => {
+					this.loading = false;
 					if (type === 'refresh') {
 						uni.stopPullDownRefresh();
 					}
 					this.cartList = r.data;
+					let tempArr = [];
+					// 获取选中列表
+					r.data.forEach(function(item,index){
+						if(item.williamCartItem.checked == 1){
+							tempArr.push(item)
+						}
+					})
+					this.selectedList = [...tempArr]
 					uni.setStorageSync('cartNum', r.data.length)
 					if (r.data.length === 0) {
 						uni.removeTabBarBadge({index: 2});
@@ -422,6 +431,7 @@
 			},
 			// 清空购物车
 			clearCart(params) {
+				console.log(params)
 			  const content = params ? '清空失效商品？' : '清空购物车？';
 				uni.showModal({
 					content,
@@ -487,10 +497,10 @@
 			},
 			// 选中商品
 			selected(index, item) {
-			  if (parseInt(item.status, 10) === 0) return;
+			 if (parseInt(item.status, 10) === 0) return;
 				this.cartList[index].selected = this.cartList[index].selected ? false : true;
-				let i = this.selectedList.indexOf(this.cartList[index].id);
-				i > -1 ? this.selectedList.splice(i, 1) : this.selectedList.push(this.cartList[index].id);
+				let i = this.selectedList.indexOf(this.cartList[index].williamCartItem.itemId);
+				i > -1 ? this.selectedList.splice(i, 1) : this.selectedList.push(this.cartList[index].williamCartItem.itemId);
 				this.isAllselected = this.selectedList.length == this.cartList.length;
 				this.sum();
 			},
@@ -513,15 +523,15 @@
 			},
 			// 减少数量(执行接口)
 			sub(item, index) {
-				if (this.cartList[index].number <= 1) {
+				if (this.cartList[index].williamCartItem.goodsCnt <= 1) {
 					return;
 				}
-				this.cartList[index].number--;
+				this.cartList[index].williamCartItem.goodsCnt--;
 				this.numberChange(item);
 			},
 			// 增加数量(执行接口)
 			add(item, index) {
-				this.cartList[index].number++;
+				this.cartList[index].williamCartItem.goodsCnt++;
 				this.numberChange(item, undefined, index, 'add');
 			},
 			// 控制可输入购物车商品数量
@@ -533,20 +543,20 @@
 					this.cartList[index].number = data.detail.value;
 				}
 				await this.$http.post(`${cartItemUpdateNum}`, {
-					sku_id: item.sku_id,
-					num: item.number
+					itemId: item.williamCartItem.itemId,
+					type: type == 'add' ? 1 : 2
 				}).then(r => {
 					if (r.code === 200) {
 						this.sum();
 					} else {
 						if (type === 'add') {
-							this.cartList[index].number--;
+							this.cartList[index].williamCartItem.goodsCnt--;
 						}
 						this.$mHelper.toast(r.message);
 					}
 				}).catch(() => {
 					if (type === 'add') {
-						this.cartList[index].number--;
+						this.cartList[index].williamCartItem.goodsCnt--;
 					}
 				})
 			},
@@ -576,9 +586,10 @@
 				for (let i = 0; i < len; i++) {
 					if (this.cartList[i].selected) {
 						arr.push(this.cartList[i]);
-						this.sumPrice = this.arrSort(arr);
 					}
 				}
+				console.log(arr)
+				this.sumPrice = this.arrSort(arr);
 				this.sumPrice = this.sumPrice.toFixed(2);
 			},
 			// 向下舍去小数点后两位
@@ -587,58 +598,67 @@
 			},
 			// 计算相同商品不同规格价格
 			arrSort(arr) {
-				const map = {},
-					dest = [];
-				for (let i = 0; i < arr.length; i++) {
-					const ai = arr[i];
-					if (!map[ai.product.id]) {
-						dest.push({
-							id: ai.product.id,
-							num: 0,
-							price: 0,
-							data: [ai]
-						});
-						map[ai.product.id] = ai;
-					} else {
-						for (let j = 0; j < dest.length; j++) {
-							const dj = dest[j];
-							if (dj.data[0].product.id === ai.product.id) {
-								dj.data.push(ai);
-								break;
-							}
-						}
-					}
+				let sumP = 0
+				for(let i=0; i<arr.length; i++){
+					console.log(arr[i].williamCartItem.goodsUnit)
+					sumP += arr[i].williamCartItem.goodsUnit * arr[i].williamCartItem.goodsCnt
 				}
-				const discountArr = []
-				dest.forEach(item => {
-					item.data.forEach(item2 => {
-						item.num += parseInt(item2.number, 10)
-						item.price += parseInt(item2.number, 10) * item2.price;
-					})
-					const ladderPreferential = item.data[0].ladderPreferential;
-					for (let i = 0; i < ladderPreferential.length; i++) {
-						if (item.num >= parseInt(ladderPreferential[i].quantity, 10)) {
-							ladderPreferential[i].num = item.num
-							ladderPreferential[i].itemPrice = item.data[0].price
-							ladderPreferential[i].totalPrice = item.price
-							discountArr.push(ladderPreferential[i])
-							break;
-						}
-					}
-				});
-				let amount = 0;
-				let discount = 0;
-				discountArr.forEach(item2 => {
-					if (parseInt(item2.type, 10) === 1) {
-						discount += item2.price * item2.num
-					} else {
-						discount += (item2.totalPrice - this.floor(item2.itemPrice * item2.price / 100) * item2.num)
-					}
-				});
-				dest.forEach(item => {
-					amount += item.price;
-				});
-				return amount - discount;
+				console.log(sumP)
+				return sumP
+			// 	const map = {},
+			// 		dest = [];
+			// 	for (let i = 0; i < arr.length; i++) {
+			// 		const ai = arr[i];
+			// 		if (!map[ai.williamGoods.id]) {
+			// 			dest.push({
+			// 				id: ai.williamGoods.id,
+			// 				num: 0,
+			// 				price: 0,
+			// 				data: [ai]
+			// 			});
+			// 			map[ai.williamGoods.id] = ai;
+			// 		} else {
+			// 			for (let j = 0; j < dest.length; j++) {
+			// 				const dj = dest[j];
+			// 				if (dj.data[0].williamGoods.id === ai.williamGoods.id) {
+			// 					dj.data.push(ai);
+			// 					break;
+			// 				}
+			// 			}
+			// 		}
+			// 	}
+			// 	const discountArr = []
+			// 	console.log(item)
+			// 	console.log(item2)
+			// 	dest.forEach(item => {
+			// 		item.data.forEach(item2 => {
+			// 			item.num += parseInt(item2.number, 10)
+			// 			item.price += parseInt(item2.number, 10) * item2.price;
+			// 		})
+			// 		const ladderPreferential = item.data[0].ladderPreferential;
+			// 		for (let i = 0; i < ladderPreferential.length; i++) {
+			// 			if (item.num >= parseInt(ladderPreferential[i].quantity, 10)) {
+			// 				ladderPreferential[i].num = item.num
+			// 				ladderPreferential[i].itemPrice = item.data[0].price
+			// 				ladderPreferential[i].totalPrice = item.price
+			// 				discountArr.push(ladderPreferential[i])
+			// 				break;
+			// 			}
+			// 		}
+			// 	});
+			// 	let amount = 0;
+			// 	let discount = 0;
+			// 	discountArr.forEach(item2 => {
+			// 		if (parseInt(item2.type, 10) === 1) {
+			// 			discount += item2.price * item2.num
+			// 		} else {
+			// 			discount += (item2.totalPrice - this.floor(item2.itemPrice * item2.price / 100) * item2.num)
+			// 		}
+			// 	});
+			// 	dest.forEach(item => {
+			// 		amount += item.price;
+			// 	});
+			// 	return amount - discount;
 			}
 		}
 	}
